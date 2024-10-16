@@ -38,9 +38,19 @@ export default function TabLayout() {
         title:"Records",
         tabBarIcon: ({color, focused})=> (
           <TabBarIcon name={focused ? 'clipboard' : 'clipboard-outline'} color={color}/>
-        )
+        ),
       }}
       />
-    </Tabs>
+       <Tabs.Screen
+      name="Finances"
+      options={{
+        title:"Finances",
+        tabBarIcon: ({color, focused})=> (
+          <TabBarIcon name={focused ? 'grid' : 'grid-outline'} color={color}/>
+        ),
+      }}
+      />
+      </Tabs>
+    
   );
 }
