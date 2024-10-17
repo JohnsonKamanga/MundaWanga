@@ -32,6 +32,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+      name="records"
+      options={{
+        title:"Records",
+        tabBarIcon: ({color, focused})=> (
+          <TabBarIcon name={focused ? 'clipboard' : 'clipboard-outline'} color={color}/>
+        )
+      }}
+      />
     </Tabs>
   );
 }
