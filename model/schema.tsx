@@ -20,17 +20,12 @@ export const db = SQLite.openDatabaseAsync("MundaWanga.db");
 
 export function createBudgetTable(db: SQLiteDatabase):Promise<any>{
     return db.runAsync(`
-        CREATE TABLE IF NOT EXISTS  budget (id INTEGER PRIMARY KEY NOT NULL , name VARCHAR(20) , set_date INTEGER NOT NULL , end_date INTEGER NOT NULL , limit REAL NOT NULL , used REAL DEFAULT 0 NOT NULL );
+    CREATE TABLE IF NOT EXISTS  budget (
+    id INTEGER PRIMARY KEY NOT NULL , 
+    name VARCHAR(20) , 
+    set_date DATETIME DEFAULT CURRENT_TIMESTAMP , 
+    end_date DATETIME NOT NULL , 
+    max_amount REAL NOT NULL , 
+    used REAL DEFAULT 0 NOT NULL );
         `)
 }
-
-// export const db = drizzle(expo);
-
-// export const budgetTable = sqliteTable("budget", {
-//     id: int().primaryKey({autoIncrement: true}),
-//     name: text(),
-//     set_date: integer({mode: 'timestamp'}).default(sql`CURRENT_TIMESTAMP`),
-//     end_date: integer({mode: 'timestamp'}),
-//     limit: real(),
-//     used: real().default(0),
-// });
