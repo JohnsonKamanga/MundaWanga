@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel'
 
 const { width } = Dimensions.get('window');
 
