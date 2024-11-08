@@ -1,16 +1,19 @@
+import { useColorScheme } from "nativewind";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 
 interface TCardHeader {
   content: string;
-  className?: undefined | string;
+  textClassName?: undefined | string;
+  containerClassName?: string;
+  children?: React.ReactNode;
 }
 
 export function CardHeader(props: TCardHeader) {
   return (
-    <View>
-      <Text className={props?.className + " font-bold text-2xl"}>{props.content}</Text>
+    <View className={props.containerClassName}>
+      <Text className={props?.textClassName + " font-bold text-2xl"}>{props.content}</Text>
     </View>
   );
 }
@@ -44,7 +47,10 @@ interface TCard {
 }
 
 export function Card(props: TCard) {
-  
 
-  return <View className={props?.className + " bg-white p-4 w-[95%] rounded-xl border-gray-500 border-[2px]"}>{props.children}</View>;
+  return <View
+  style={{
+    borderColor: 'rgba(0,0,0,0.1)'
+  }}
+  className={props?.className + ` bg-white dark:bg-[#004042] p-4 w-[95%] rounded-xl border-[1px] shadow-black dark:shadow-white shadow-xl`}>{props.children}</View>;
 }
