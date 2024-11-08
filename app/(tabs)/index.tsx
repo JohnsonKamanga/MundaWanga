@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Platform, View, Text } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { Link } from 'expo-router';
 export default function HomeScreen() {
   return (
     <View className="h-full flex flex-col bg-[#a2af9f]">
@@ -14,8 +15,8 @@ export default function HomeScreen() {
      </View>
      </View>
      </View>
-     <View className="bg-purple-400">
-
+     <View className="bg-primary mt-1 h-12 flex justify-center items-center">
+        <Link href={"../Feedback"} className='text-white font-bold'>Feedback</Link>
      </View>
     </View>
   );
