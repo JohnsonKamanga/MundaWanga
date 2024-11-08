@@ -1,56 +1,30 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import {Drawer} from 'expo-router/drawer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+export default function SideBar(){
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
+  return(
+    <GestureHandlerRootView>
+      <Drawer
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-      name="records"
-      options={{
-        title:"Records",
-        tabBarIcon: ({color, focused})=> (
-          <TabBarIcon name={focused ? 'clipboard' : 'clipboard-outline'} color={color}/>
-        ),
+        headerStatusBarHeight: 20,
       }}
-      />
-       <Tabs.Screen
-      name="Finances"
-      options={{
-        title:"Finances",
-        tabBarIcon: ({color, focused})=> (
-          <TabBarIcon name={focused ? 'grid' : 'grid-outline'} color={color}/>
-        ),
-      }}
-      />
-      </Tabs>
-    
-  );
+      >
+        <Drawer.Screen
+        name='(home)'
+        options={{
+          drawerLabel: 'Home',
+          title: 'Home-title',
+        }}
+        />
+        <Drawer.Screen
+        name='settings'
+        options={{
+          drawerLabel: 'Settings',
+          title: 'Settings-Title',
+        }}
+        />
+      </Drawer>
+    </GestureHandlerRootView>
+  )
 }
