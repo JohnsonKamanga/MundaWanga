@@ -1,4 +1,3 @@
-import { styled } from "nativewind";
 import { Button, Text, View } from "react-native";
 
 type TDialougeContent = {
@@ -8,13 +7,11 @@ type TDialougeContent = {
 type stateSetter = (input: boolean)=>void;
 type voidFn = ()=>void;
 export function DialougeContent({ content }: TDialougeContent) {
-  const StyledView = styled(View);
-  const StyledText = styled(Text);
 
   return (
-    <StyledView>
-      <StyledText>{content}</StyledText>
-    </StyledView>
+    <View>
+      <Text>{content}</Text>
+    </View>
   );
 }
 
@@ -22,9 +19,9 @@ interface TDialougeTrigger {
   setOpen: stateSetter;
 };
 export function DialougeTrigger(props: TDialougeTrigger) {
-  const StyledButton = styled(Button);
+
   return (
-    <StyledButton
+    <Button
     {...props}
       onPress={() => {
         props.setOpen(true);
@@ -39,10 +36,10 @@ interface TDialougeAction {
 };
 
 export function DialougeAction(props: TDialougeAction) {
-  const StyledButton = styled(Button);
+
 
   return (
-    <StyledButton {...props}/>
+    <Button {...props}/>
   );
 }
 
@@ -51,10 +48,10 @@ interface TDialougeClose {
   title: string;
 };
 export function DialougeClose(props: TDialougeClose) {
-  const StyledButton = styled(Button);
+ 
 
   return (
-    <StyledButton {...props} onPress={()=>{
+    <Button {...props} onPress={()=>{
       props.close(false);
     }}/>
   );
@@ -63,17 +60,17 @@ export function DialougeClose(props: TDialougeClose) {
 interface TDialouge {
   open: boolean;
   setOpen: stateSetter;
-  children;
+  children: any;
 
 };
 export function Dialouge(props: TDialouge) {
-  const StyledView = styled(View);
+ 
   const ReturnedComponent = props.open ? (
-    <StyledView {...props}/>
+    <View {...props}/>
   ) : (
-    <StyledView>
+    <View>
       <DialougeTrigger setOpen={props.setOpen} />
-    </StyledView>
+    </View>
   );
 
   return ReturnedComponent;
