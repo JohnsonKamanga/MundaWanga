@@ -1,6 +1,5 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -12,8 +11,11 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarInactiveTintColor: '#ffffff',
+        tabBarStyle: { backgroundColor: '#228b22' }, // Sets green background
         headerShown: false,
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -24,31 +26,31 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="records"
         options={{
-          title: 'Explore',
+          title: 'Records',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'document-text' : 'document-text-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-      name="records"
-      options={{
-        title:"Records",
-        tabBarIcon: ({color, focused})=> (
-          <TabBarIcon name={focused ? 'clipboard' : 'clipboard-outline'} color={color}/>
-        ),
-      }}
+        name="Finances"
+        options={{
+          title: 'Finances',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'wallet' : 'wallet-outline'} color={color} />
+          ),
+        }}
       />
-       <Tabs.Screen
-      name="Finances"
-      options={{
-        title:"Finances",
-        tabBarIcon: ({color, focused})=> (
-          <TabBarIcon name={focused ? 'grid' : 'grid-outline'} color={color}/>
-        ),
-      }}
+      <Tabs.Screen
+        name="Notification"
+        options={{
+          title: 'Notification',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'notifications' : 'notifications-outline'} color={color} />
+          ),
+        }}
       />
       
       </Tabs>

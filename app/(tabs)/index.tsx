@@ -1,26 +1,77 @@
-import { Image, StyleSheet, Platform, View, Text } from 'react-native';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { Link } from 'expo-router';
+// HomeScreen Component
+import React from "react";
+import { ScrollView, View, Text } from "react-native";
+import { Card, CardBody, CardFooter, CardHeader } from "./recordscard";
+import Slideshow from "@/components/slide show";
+import {useTailwind} from 'tailwindcss-react-native'
+import Ionicons from "@expo/vector-icons/Ionicons";
+
 export default function HomeScreen() {
   return (
-    <View className="h-full flex flex-col bg-[#a2af9f]">
-     <View className="h-[250px] w-full bg-[#228b22] flex flex-row items-center justify-center">
-      <View className="flex flex-row items-center justify-center h-[60px] rounded-sm bg-[#a2af9f] w-[90%]">
-      <View className="mx-2">
-        <AntDesign name="caretleft"/>
+    <ScrollView className="flex-1 bg-[#a2af9f]">
+      {/* Header */}
+      <View className="h-[110px] bg-[#228b22] items-center justify-center">
+        <Text className="text-white text-2xl font-bold">MundaWanga</Text>
       </View>
-      <View className="mx-2"><Text className="text-black font-weight">summary</Text></View>
-     <View className="mx-2">
-     <AntDesign name="caretright"/>
-     </View>
-     </View>
-     </View>
-     <View className="bg-primary mt-1 h-12 flex justify-center items-center">
-        <Link href={"../Feedback"} className='text-white font-bold'>Feedback</Link>
-     </View>
-     <View className="bg-black mt-1 h-12 flex justify-center items-center">
-        <Link href={"../Settings"} className='text-white font-bold'>Settings</Link>
-     </View>
-    </View>
-  );
+
+      {/*income summary  card */}
+      <View className="my-5 px-4">
+        <Card>
+          <View className="flex flex-row gap-x-2 items-centre">
+            <Ionicons name= "cash-outline" size={30}/>
+          <CardHeader content="Income" />
+          </View>
+          <CardBody className="flex flex-row-x-2 items-centre">
+            <View>
+          <Text></Text>
+            </View>
+            <View>
+
+            </View>
+            <Text className="text-gray-700">
+             
+            </Text> 
+          </CardBody>
+        </Card>
+      </View>
+
+
+      {/* Slideshow  */}
+      <View className="my-0 px-4">
+        <Slideshow />
+      </View>
+
+      <View className="my-1 px-4">
+        <Card>
+          <View className="flex flex-row gap-x-2 items-center"> 
+          <Ionicons name="receipt-outline" size={30}/>
+          <CardHeader content="Records" />
+          </View>
+          <CardBody>
+            <Text className="text-[#228b22]">
+              Plan and track your agricultural expenses with ease. Set up budgets for seeds, fertilizer, labor, and more to ensure you stay within your limits and maximize profitability.
+            </Text>
+          </CardBody>
+          <CardFooter>
+            <Text className="text-[#228b22] font-bold">Learn More</Text>
+          </CardFooter>
+        </Card>
+        {/*Budjet summary card*/}
+        <Card>
+          <View className="flex flex-row gap-x-2 items-centre">
+          <Ionicons name="calculator-outline" size={30}/>
+          <CardHeader content="Budget" />
+          </View>
+          <CardBody>
+            <Text className="text-[#228b22]">
+              Maintain detailed records of crop yields, livestock performance, and daily farming activities. Accurate records help you make data-driven decisions and increase farm productivity.
+            </Text>
+          </CardBody>
+          <CardFooter>
+            <Text className="text-[#228b22] font-bold">Learn More</Text>
+          </CardFooter>
+        </Card>
+      </View>
+  </ScrollView>
+  )
 }
