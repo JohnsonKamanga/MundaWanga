@@ -1,61 +1,46 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import {Drawer} from 'expo-router/drawer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
+export default function SideBar(){
+  const colorScheme = useColorScheme()
+  return(
+    <GestureHandlerRootView>
+      <Drawer
+      
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        tabBarInactiveTintColor: '#ffffff',
-        tabBarStyle: { backgroundColor: '#228b22' }, // Sets green background
-        headerShown: false,
+        headerStatusBarHeight: 20,
+        drawerActiveTintColor: 'white',
+        drawerInactiveTintColor: 'rgb(230,230,230)',
+        drawerStyle:{
+          backgroundColor: Colors[colorScheme ?? 'light'].barColor,
+          borderColor: 'rgba(256,256,256,0.2)',
+          borderRightWidth: 0.3,
+        },
+        headerTitleAlign: 'center',
+        headerTintColor: 'white',
+        headerStyle: {
+          backgroundColor: Colors[colorScheme ?? 'light'].barColor
+        }
       }}
-    >
-      <Tabs.Screen
-        name="index"
+      >
+        <Drawer.Screen
+        name='(home)'
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
+          drawerLabel: 'Home',
+          title: 'MundaWanga',
         }}
-      />
-      <Tabs.Screen
-        name="records"
+        />
+        <Drawer.Screen
+        name='settings'
         options={{
-          title: 'Records',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'document-text' : 'document-text-outline'} color={color} />
-          ),
+          drawerLabel: 'Settings',
+          title: 'Settings-Title',
         }}
-      />
-      <Tabs.Screen
-        name="Finances"
-        options={{
-          title: 'Finances',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'wallet' : 'wallet-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Notification"
-        options={{
-          title: 'Notification',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'notifications' : 'notifications-outline'} color={color} />
-          ),
-        }}
-      />
-      
-      </Tabs>
-
-      
-      
-  );
+        />
+      </Drawer>
+    </GestureHandlerRootView>
+  )
 }
