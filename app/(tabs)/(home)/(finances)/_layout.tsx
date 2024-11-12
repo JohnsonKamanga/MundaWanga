@@ -11,8 +11,11 @@ export default function TabLayout() {
       screenOptions={{
         tabBarContentContainerStyle: {
           justifyContent: "space-around",
-          marginTop: "5%",
+          height: 55,
         },
+        tabBarLabelStyle: {
+          fontSize: 8
+        }
       }}
     >
       <Tabs.Screen
@@ -24,6 +27,7 @@ export default function TabLayout() {
             <TabBarIcon
               name={focused ? "calculator" : "calculator-outline"}
               color={color}
+              size={20}
             />
           ),
         }}
@@ -37,6 +41,7 @@ export default function TabLayout() {
             <TabBarIcon
               name={focused ? "wallet" : "wallet-outline"}
               color={color}
+              size={20}
             />
           ),
         }}
