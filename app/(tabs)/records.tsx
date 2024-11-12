@@ -113,7 +113,7 @@ export default function Record() {
             item.type === "Income" ? styles.income : styles.expense,
           ]}
         >
-          {item.amount}
+          MK {item.amount}
         </Text>
       </View>
       {renderDeleteButton(index)}
