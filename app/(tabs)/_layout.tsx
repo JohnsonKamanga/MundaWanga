@@ -40,6 +40,20 @@ export default function SideBar(){
           title: 'Settings-Title',
         }}
         />
+        <Drawer.Screen
+        name='feedback'
+        options={{
+          drawerLabel: 'Feedback',
+          title: 'Feedback-Title',
+        }}
+        />
+        <Drawer.Screen
+        name='account_management'
+        options={{
+          drawerLabel: 'Account Management',
+          title: 'Account Management-Title',
+        }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   )

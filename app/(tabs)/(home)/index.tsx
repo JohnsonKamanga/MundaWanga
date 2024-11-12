@@ -1,18 +1,13 @@
 // HomeScreen Component
 import React from "react";
 import { ScrollView, View, Text } from "react-native";
-import { Card, CardBody, CardFooter, CardHeader } from "./recordscard";
+import { Card, CardBody, CardFooter, CardHeader } from "@/components/Card";
 import Slideshow from "@/components/slide show";
-import {useTailwind} from 'tailwindcss-react-native'
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function HomeScreen() {
   return (
     <ScrollView className="flex-1 bg-[#a2af9f]">
-      {/* Header */}
-      <View className="h-[110px] bg-[#228b22] items-center justify-center">
-        <Text className="text-white text-2xl font-bold">MundaWanga</Text>
-      </View>
 
       {/*income summary  card */}
       <View className="my-5 px-4">
