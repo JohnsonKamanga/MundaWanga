@@ -38,7 +38,7 @@ export default function Settings() {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View className={isDarkMode ? 'bg-gray-900 flex-1 p-6' : 'bg-gray-100 flex-1 p-6'}>
-        <Text className={isDarkMode ? 'text-white text-xl mb-2 mt-8 font-bold border-b border-primary' : 'text-gray-900 text-xl mb-2 mt-8 font-bold border-b border-primary'}>Settings</Text>
+        <Text className={isDarkMode ? 'text-white text-xl mb-2 mt-8 font-bold border-b border-primary' : 'text-gray-900 text-3 xl mb-2 mt-8 font-bold border-b border-primary'}>Settings</Text>
 
         {/****** General Section *****/}
         <Text className={isDarkMode ? 'text-gray-200 text-xl font-bold mt-2 border-b border-primary' : 'text-gray-800 text-xl font-bold mt-2 border-b border-primary'}>General</Text>
