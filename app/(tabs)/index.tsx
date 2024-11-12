@@ -18,6 +18,9 @@ export default function HomeScreen() {
      <View className="bg-primary mt-1 h-12 flex justify-center items-center">
         <Link href={"../Feedback"} className='text-white font-bold'>Feedback</Link>
      </View>
+     <View className="bg-black mt-1 h-12 flex justify-center items-center">
+        <Link href={"../Settings"} className='text-white font-bold'>Settings</Link>
+     </View>
     </View>
   );
 }

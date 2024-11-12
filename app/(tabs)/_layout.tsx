@@ -50,7 +50,18 @@ export default function TabLayout() {
         ),
       }}
       />
+      <Tabs.Screen
+      name="kadashdkas"
+      options={{
+        title:"jashkjsf",
+        tabBarIcon: ({color, focused})=> (
+          <TabBarIcon name={focused ? 'grid' : 'grid-outline'} color={color}/>
+        ),
+      }}
+      />
       </Tabs>
+
+      
       
   );
 }
