@@ -3,37 +3,50 @@ import React from "react";
 import { ScrollView, View, Text } from "react-native";
 import { Card, CardBody, CardFooter, CardHeader } from "./recordscard";
 import Slideshow from "@/components/slide show";
+import {useTailwind} from 'tailwindcss-react-native'
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function HomeScreen() {
   return (
     <ScrollView className="flex-1 bg-[#a2af9f]">
-      {/* Header Section */}
+      {/* Header */}
       <View className="h-[110px] bg-[#228b22] items-center justify-center">
         <Text className="text-white text-2xl font-bold">MundaWanga</Text>
       </View>
 
-      {/* Introduction Card */}
+      {/*income summary  card */}
       <View className="my-5 px-4">
         <Card>
-          <CardHeader content="Welcome to MundaWanga" />
-          <CardBody>
+          <View className="flex flex-row gap-x-2 items-centre">
+            <Ionicons name= "cash-outline" size={30}/>
+          <CardHeader content="Income" />
+          </View>
+          <CardBody className="flex flex-row-x-2 items-centre">
+            <View>
+          <Text></Text>
+            </View>
+            <View>
+
+            </View>
             <Text className="text-gray-700">
-              MundaWanga helps you efficiently manage your agricultural budgets, records, and reports. Keep track of your farm activities, monitor spending, and generate insightful reports.
-            </Text>
+             
+            </Text> 
           </CardBody>
         </Card>
       </View>
 
 
-      {/* Slideshow Section */}
-      <View className="my-5 px-4">
+      {/* Slideshow  */}
+      <View className="my-0 px-4">
         <Slideshow />
       </View>
 
-      {/* Featured Services */}
-      <View className="my-5 px-4">
+      <View className="my-1 px-4">
         <Card>
-          <CardHeader content="Budget Management" />
+          <View className="flex flex-row gap-x-2 items-center"> 
+          <Ionicons name="receipt-outline" size={30}/>
+          <CardHeader content="Records" />
+          </View>
           <CardBody>
             <Text className="text-[#228b22]">
               Plan and track your agricultural expenses with ease. Set up budgets for seeds, fertilizer, labor, and more to ensure you stay within your limits and maximize profitability.
@@ -43,9 +56,12 @@ export default function HomeScreen() {
             <Text className="text-[#228b22] font-bold">Learn More</Text>
           </CardFooter>
         </Card>
-
+        {/*Budjet summary card*/}
         <Card>
-          <CardHeader content="Record Keeping" />
+          <View className="flex flex-row gap-x-2 items-centre">
+          <Ionicons name="calculator-outline" size={30}/>
+          <CardHeader content="Budget" />
+          </View>
           <CardBody>
             <Text className="text-[#228b22]">
               Maintain detailed records of crop yields, livestock performance, and daily farming activities. Accurate records help you make data-driven decisions and increase farm productivity.
@@ -55,45 +71,7 @@ export default function HomeScreen() {
             <Text className="text-[#228b22] font-bold">Learn More</Text>
           </CardFooter>
         </Card>
-
-        <Card>
-          <CardHeader content="Report Generation" />
-          <CardBody>
-            <Text className="text-[#228b22]">
-              Generate insightful reports to analyze financial health, track productivity, and forecast future expenses. Access monthly, quarterly, or annual reports to stay informed.
-            </Text>
-          </CardBody>
-          <CardFooter>
-            <Text className="text-[#228b22] font-bold">View Reports</Text>
-          </CardFooter>
-        </Card>
       </View>
-      {/* Additional Features */}
-      <View className="my-5 px-4">
-        <Card>
-          <CardHeader content="Track Inventory" />
-          <CardBody>
-            <Text className="text-[#228b22]">
-              Keep a detailed log of your inventory levels, including equipment, seeds, and pesticides. Avoid stockouts and track seasonal supply needs.
-            </Text>
-          </CardBody>
-          <CardFooter>
-            <Text className="text-[#228b22] font-bold">Manage Inventory</Text>
-          </CardFooter>
-        </Card>
-
-        <Card>
-          <CardHeader content="Labor Management" />
-          <CardBody>
-            <Text className="text-[#228b22]">
-              Assign tasks, track labor hours, and monitor productivity to optimize workforce efficiency and reduce operational costs.
-            </Text>
-          </CardBody>
-          <CardFooter>
-            <Text className="text-[#228b22] font-bold">View Labor Reports</Text>
-          </CardFooter>
-        </Card>
-      </View>
-    </ScrollView>
-  );
+  </ScrollView>
+  )
 }
