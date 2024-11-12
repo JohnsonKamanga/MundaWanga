@@ -11,14 +11,32 @@ import { addBudget, findBudgetRowById, TBudget } from "@/model/finances/budget";
 import { Ionicons } from "@expo/vector-icons";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useSQLiteContext } from "expo-sqlite";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button, Modal, Pressable, Text, TextInput, View } from "react-native";
 import { useColorScheme } from "nativewind";
+import { Colors } from "@/constants/Colors";
+
+interface TFormField {
+  children: React.ReactNode;
+}
+
+function FormField({children}: TFormField){
+  return(
+    <View
+    style={{
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.1)'
+    }}
+    className="p-3 bg-gray-200 rounded-xl">
+      {children}
+    </View>
+  )
+}
 
 export default function Budget() {
   const sampleData: TBudget[] = [];
   const [maxAmount, setMaxAmount] = useState<number>(0);
-  const [endDate, setEndDate] = useState<number>(0);
+  const [endDate, setEndDate] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [output, setOutput] = useState<TBudget>();
   const [open, setOpen] = useState(false);
@@ -168,35 +186,74 @@ export default function Budget() {
             }}
             className="min-h-screen h-full w-full flex-col items-center p-4"
           >
-            <View className="w-full flex-row items-center justify-around">
-            <Pressable
+            <View
+              className="relative w-full p-10 mt-[15%] rounded-xl bg-white dark:bg-[#808080] gap-y-3"
+            >
+              <View className="flex items-center justify-center">
+              <Pressable
                 style={{
                   borderColor: `rgba(0,0,0,0.15)`,
                 }}
-                className="bg-white border-[1px] rounded-full w-[50px] h-[50px] flex items-center justify-center"
+                className="absolute -left-[30px] -top-[30px] bg-white border-[1px] rounded-xl w-[40px] h-[40px] flex items-center justify-center"
                 onPress={(e) => {
                   setOpen(!open);
                 }}
               >
-                <Ionicons name="close" color="black" size={35} />
+                <Ionicons name="close" color="black" size={30} />
               </Pressable>
-              <View className="w-full text-center">
-            <Text className="text-white text-center text-4xl font-bold">New Record</Text>
-            </View>
-            </View>
-            <View
-              style={{
-                backgroundColor: `rgb(0,64,66)`,
+
+                <Text className="font-bold text-3xl">
+                  Budget Details
+                </Text>
+              </View>
+              <View className=" flex flex-col gap-y-4">
+              <FormField>
+              <TextInput
+              onChangeText={(text) => {
+                setName(text);
               }}
-              className="min-h-[500px] w-full p-4 mt-[15%] rounded-xl"
-            >
-              
-              <Text className="text-white">Record contents</Text>
+              placeholder="Budget Name"
+              defaultValue={name}
+              />
+              </FormField>
+              <FormField>
+              <TextInput
+              onChangeText={(text) => {
+                setMaxAmount(Number(text));
+              }}
+              placeholder="Budget Amount"
+              />
+              </FormField>
+              <FormField>
+              <TextInput
+              onChangeText={(text) => {
+                setEndDate(text);
+              }}
+              placeholder="End Date"
+              />
+              </FormField>
+              </View>
+              <View className="flex flex-row justify-center">
+                <Pressable
+                onPress={(e) => {
+                  setOpen(!open);
+                }}
+                className="flex flex-row items-center justify-center p-3 rounded-xl w-[150px]">
+                  <Text className="font-extrabold text-2xl text-[#228b22]">Cancel</Text>
+                </Pressable>
+                
+                <Pressable className="flex flex-row items-center justify-center p-3 bg-[#228b22] rounded-xl w-[150px]">
+                  <Text className="font-extrabold text-2xl text-white">Submit</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
         </Modal>
         <Pressable
-          className="border-[1px] bg-[#006466] p-3 rounded-full absolute bottom-[190px] right-[55px]"
+      style={{
+        backgroundColor: Colors[colorScheme ?? 'light'].barColor
+      }}
+          className="border-[1px] p-3 rounded-full absolute bottom-[240px] right-[33px]"
           onPress={() => {
             setOpen(true);
           }}
