@@ -54,7 +54,7 @@ export default function SideBar(){
         name='feedback'
         options={{
           drawerLabel: 'Feedback',
-          title: 'Feedback-Title',
+          title: 'Send us Feedback',
         }}
         />
         <Drawer.Screen
