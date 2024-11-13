@@ -24,7 +24,7 @@ export default function HomeScreen() {
           <CardBody className="flex flex-row x-2 items-centre">
           
           <View className="p-2">
-          <Text>somethings</Text>
+          <Text>Amount: k20,000</Text>
             </View>
             <View
             style={{
@@ -32,7 +32,7 @@ export default function HomeScreen() {
               borderColor: '#228b22'
             }}
             className="p-3">
-          <Text>other things</Text>
+          <Text>Quantity:20</Text>
             </View>
             <View>
 
@@ -41,6 +41,7 @@ export default function HomeScreen() {
              
             </Text> 
           </CardBody>
+        
           
           </View>
         </Card>
@@ -72,6 +73,7 @@ export default function HomeScreen() {
         <View className="my-5 px-2">
         {/*Budjet summary card*/}
         <Card>
+          
           
           <View className="flex flex-row gap-x-2 items-centre">
           <Ionicons name="calculator-outline" size={30}/>
