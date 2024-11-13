@@ -1,5 +1,7 @@
 import { Text, View, TextInput, TouchableOpacity, Alert, Switch } from 'react-native';
 import React, { useState } from 'react';
+import axios from 'axios';
+import { baseurl } from '@/constants/url';
 
 export default function Feedback() {
   const [name, setName] = useState('');
@@ -15,6 +17,16 @@ export default function Feedback() {
     } else {
       Alert.alert('Feedback Submitted', `Name: ${name}\nEmail: ${email}\nFeedback: ${feedback}`);
     }
+
+    axios.post(`${baseurl}/feedback`,{
+      message: feedback,
+      user_id: 1,
+    }).then((addedMessage)=>{
+      console.log('success: ',addedMessage.data?.message);
+    })
+    .catch((err)=>{
+      console.error('An error occured: ', err);
+    })
   };
 
   const toggleDarkMode = () => setIsDarkMode((prevMode) => !prevMode);
