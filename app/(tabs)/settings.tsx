@@ -1,6 +1,8 @@
 import { Text, View, Switch, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
+import { deleteItemAsync } from 'expo-secure-store';
+import { UserContext } from '@/hooks/useUserContext';
 
 
 export default function Settings() {
@@ -8,7 +10,7 @@ export default function Settings() {
   const [pushNotifications, setPushNotifications] = useState(false);
   const [budgetAlerts, setBudgetAlerts] = useState(false);
   const [dateFormat, setDateFormat] = useState('MM/DD/YYYY');
-
+  const {token, setToken} = useContext(UserContext);
   const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
   const togglePushNotifications = () => setPushNotifications((prev) => !prev);
   const toggleBudgetAlerts = () => setBudgetAlerts((prev) => !prev);
@@ -16,7 +18,15 @@ export default function Settings() {
   const dateFormats = ['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD', 'MM DD,YYYY'];
 
   const handleLogout = () => {
+    deleteItemAsync('token')
+    .then(()=>{
+      setToken(null);
+      console.log('token', token);
     Alert.alert('Logout', 'Success.');
+  })
+  .catch((err)=>{
+    Alert.alert('Failed', 'logout');
+  })
   };
 
   const handleExportData = () => {
@@ -38,7 +48,7 @@ export default function Settings() {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View className={isDarkMode ? 'bg-gray-900 flex-1 p-6' : 'bg-gray-100 flex-1 p-6'}>
-        <Text className={isDarkMode ? 'text-white text-xl mb-2 mt-8 font-bold border-b border-primary' : 'text-gray-900 text-3 xl mb-2 mt-8 font-bold border-b border-primary'}>Settings</Text>
+        <Text className={isDarkMode ? 'text-white text-3xl mb-2 mt-8 font-bold border-b border-primary' : 'text-gray-900 text-3xl mb-2 mt-8 font-bold border-b border-primary'}>Settings</Text>
 
         {/****** General Section *****/}
         <Text className={isDarkMode ? 'text-gray-200 text-xl font-bold mt-2 border-b border-primary' : 'text-gray-800 text-xl font-bold mt-2 border-b border-primary'}>General</Text>
