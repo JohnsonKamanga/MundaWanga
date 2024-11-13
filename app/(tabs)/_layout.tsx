@@ -47,7 +47,7 @@ export default function SideBar(){
         name='settings'
         options={{
           drawerLabel: 'Settings',
-          title: 'Settings-Title',
+          title: 'Settings',
         }}
         />
         <Drawer.Screen
