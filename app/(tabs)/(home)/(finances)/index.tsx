@@ -7,36 +7,54 @@ import {
   DialougeTrigger,
 } from "@/components/Dialouge";
 import { ProgressBar } from "@/components/ProgressBar";
-import { addBudget, findBudgetRowById, TBudget } from "@/model/finances/budget";
+import {
+  addBudget,
+  FindAllBudgets,
+  findBudgetRowById,
+  TBudget,
+  TSubmitData,
+} from "@/model/finances/budget";
 import { Ionicons } from "@expo/vector-icons";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useSQLiteContext } from "expo-sqlite";
-import React, { useState } from "react";
-import { Button, Modal, Pressable, Text, TextInput, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  Button,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useColorScheme } from "nativewind";
 import { Colors } from "@/constants/Colors";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { format } from "date-fns";
 
 interface TFormField {
   children: React.ReactNode;
 }
 
-function FormField({children}: TFormField){
-  return(
+function FormField({ children }: TFormField) {
+  return (
     <View
-    style={{
-      borderWidth: 1,
-      borderColor: 'rgba(0,0,0,0.1)'
-    }}
-    className="p-3 bg-gray-200 rounded-xl">
+      style={{
+        borderWidth: 1,
+        borderColor: "rgba(0,0,0,0.1)",
+      }}
+      className="p-3 bg-gray-200 rounded-xl"
+    >
       {children}
     </View>
-  )
+  );
 }
 
 export default function Budget() {
-  const sampleData: TBudget[] = [];
+  const [budgets, setBudgets] = useState<TBudget[] | TSubmitData[]>([]);
   const [maxAmount, setMaxAmount] = useState<number>(0);
-  const [endDate, setEndDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<Date>(new Date());
   const [name, setName] = useState<string>("");
   const [output, setOutput] = useState<TBudget>();
   const [open, setOpen] = useState(false);
@@ -46,9 +64,9 @@ export default function Budget() {
 
   const mapBudgets = (budget: TBudget) => {
     return (
-      <Card>
+      <Card key={budget.id}>
         <CardHeader
-          content="Fertilizer"
+          content={budget.name}
           containerClassName="flex flex-row w-full items-center justify-between"
         >
           <Ionicons name="ellipsis-vertical-outline" size={20} />
@@ -56,17 +74,20 @@ export default function Budget() {
         <CardBody className="w-[80%]">
           <View className="flex flex-row">
             <Text className="dark:text-white font-bold mr-2">Spent:</Text>
-            <Text className="dark:text-white font-light">MWK 276,000</Text>
+            <Text className="dark:text-white font-light">MWK {budget.max_amount}</Text>
           </View>
           <View className="flex flex-row">
             <Text className="dark:text-white font-bold mr-2">
               Last Modified:
             </Text>
             <Text className="dark:text-white font-light">
-              Monday 23 June 2023
+              {format(budget.set_date.toLocaleString(), "EEEE dd h m aaa")}
             </Text>
           </View>
-          <ProgressBar dividend={276000} divisor={500000} />
+          <ProgressBar
+            dividend={budget.max_amount / 40}
+            divisor={budget.max_amount}
+          />
         </CardBody>
         <CardFooter className="w-full flex flex-row gap-x-2">
           <View
@@ -100,77 +121,29 @@ export default function Budget() {
     );
   };
 
+  useEffect(() => {
+    FindAllBudgets(db)
+      .then((budgets) => {
+        setBudgets(budgets);
+        console.log("fetched budgets", budgets);
+      })
+      .catch((err) => {
+        console.error("failed to get records: ", err);
+      });
+  }, []);
+
   return (
-    <View className="h-full flex flex-col items-center p-1">
+    <View
+      style={{
+        alignContent: "space-around",
+      }}
+      className="h-full flex flex-col p-1"
+    >
       <Text className="dark:text-white text-white">Budget cards</Text>
-      <Card>
-        <CardHeader
-          content="Fertilizer"
-          textClassName="dark:text-white"
-          containerClassName="flex flex-row w-full items-center justify-between"
-        >
-          <Ionicons
-            name="ellipsis-vertical-outline"
-            size={20}
-            color={colorScheme === "light" ? "black" : "white"}
-          />
-        </CardHeader>
-        <CardBody className="w-[80%]">
-          <View className="flex flex-row">
-            <Text className="dark:text-white font-bold mr-2">Spent:</Text>
-            <Text className="dark:text-white font-light">MWK 276,000</Text>
-          </View>
-          <View className="flex flex-row">
-            <Text className="dark:text-white font-bold mr-2">Target:</Text>
-            <Text className="dark:text-white font-light">MWK 500,000</Text>
-          </View>
-          <View className="flex flex-row">
-            <Text className="dark:text-white font-bold mr-2">
-              Last Modified:
-            </Text>
-            <Text className="dark:text-white font-light">
-              Monday 23 June 2023
-            </Text>
-          </View>
-          <ProgressBar dividend={276000} divisor={500000} />
-        </CardBody>
-        <CardFooter className="w-full flex flex-row gap-x-2">
-          <View
-            style={{
-              backgroundColor: "rgba(0,0,0,0.16)",
-              borderWidth: 1,
-              borderColor: "rgba(0,0,0,0.1)",
-            }}
-            className="flex flex-row items-center justify-center opacity-40 p-2 rounded-3xl"
-          >
-            <Ionicons
-              name="calendar-clear-outline"
-              size={25}
-              color={colorScheme === "light" ? "black" : "white"}
-            />
-            <Text className="dark:text-white ml-1 text-sm font-light">
-              12 June 2023
-            </Text>
-          </View>
-          <View
-            style={{
-              backgroundColor: "rgba(0,0,0,0.16)",
-              borderWidth: 1,
-              borderColor: "rgba(0,0,0,0.1)",
-            }}
-            className="flex flex-row items-center justify-center opacity-40 p-2 rounded-3xl"
-          >
-            <Ionicons
-              name="stopwatch-outline"
-              size={25}
-              color={colorScheme === "light" ? "black" : "white"}
-            />
-            <Text className="dark:text-white ml-1 text-sm font-light">
-              23 July 2023
-            </Text>
-          </View>
-        </CardFooter>
-      </Card>
+
+      <ScrollView className="w-full gap-y-3">
+        {budgets.map(mapBudgets)}
+      </ScrollView>
       <View className="w-full min-h-screen h-full absolute">
         <Modal
           visible={open}
@@ -186,73 +159,92 @@ export default function Budget() {
             }}
             className="min-h-screen h-full w-full flex-col items-center p-4"
           >
-            <View
-              className="relative w-full p-10 mt-[15%] rounded-xl bg-white dark:bg-[#808080] gap-y-3"
-            >
+            <View className="relative w-full p-10 mt-[15%] rounded-xl bg-white dark:bg-[#808080] gap-y-3">
               <View className="flex items-center justify-center">
-              <Pressable
-                style={{
-                  borderColor: `rgba(0,0,0,0.15)`,
-                }}
-                className="absolute -left-[30px] -top-[30px] bg-white border-[1px] rounded-xl w-[40px] h-[40px] flex items-center justify-center"
-                onPress={(e) => {
-                  setOpen(!open);
-                }}
-              >
-                <Ionicons name="close" color="black" size={30} />
-              </Pressable>
+                <Pressable
+                  style={{
+                    borderColor: `rgba(0,0,0,0.15)`,
+                  }}
+                  className="absolute -left-[30px] -top-[30px] bg-white border-[1px] rounded-xl w-[40px] h-[40px] flex items-center justify-center"
+                  onPress={(e) => {
+                    setOpen(!open);
+                  }}
+                >
+                  <Ionicons name="close" color="black" size={30} />
+                </Pressable>
 
-                <Text className="font-bold text-3xl">
-                  Budget Details
-                </Text>
+                <Text className="font-bold text-3xl">Budget Details</Text>
               </View>
               <View className=" flex flex-col gap-y-4">
-              <FormField>
-              <TextInput
-              onChangeText={(text) => {
-                setName(text);
-              }}
-              placeholder="Budget Name"
-              defaultValue={name}
-              />
-              </FormField>
-              <FormField>
-              <TextInput
-              onChangeText={(text) => {
-                setMaxAmount(Number(text));
-              }}
-              placeholder="Budget Amount"
-              />
-              </FormField>
-              <FormField>
-              <TextInput
-              onChangeText={(text) => {
-                setEndDate(text);
-              }}
-              placeholder="End Date"
-              />
-              </FormField>
+                <FormField>
+                  <TextInput
+                    onChangeText={(text) => {
+                      setName(text);
+                    }}
+                    placeholder="Budget Name"
+                    defaultValue={name}
+                  />
+                </FormField>
+                <FormField>
+                  <TextInput
+                    onChangeText={(text) => {
+                      setMaxAmount(Number(text));
+                    }}
+                    placeholder="Budget Amount"
+                  />
+                </FormField>
+                <FormField>
+                  <RNDateTimePicker mode="date" display="compact" value={endDate} minimumDate={new Date(Date.now())}/>
+                </FormField>
               </View>
               <View className="flex flex-row justify-center">
                 <Pressable
-                onPress={(e) => {
-                  setOpen(!open);
-                }}
-                className="flex flex-row items-center justify-center p-3 rounded-xl w-[150px]">
-                  <Text className="font-extrabold text-2xl text-[#228b22]">Cancel</Text>
+                  onPress={(e) => {
+                    setOpen(!open);
+                  }}
+                  className="flex flex-row items-center justify-center p-3 rounded-xl w-[150px]"
+                >
+                  <Text className="font-extrabold text-2xl text-[#228b22]">
+                    Cancel
+                  </Text>
                 </Pressable>
-                
-                <Pressable className="flex flex-row items-center justify-center p-3 bg-[#228b22] rounded-xl w-[150px]">
-                  <Text className="font-extrabold text-2xl text-white">Submit</Text>
+
+                <Pressable
+                  onPress={(event) => {
+                    event.preventDefault();
+                    addBudget(
+                      {
+                        name: name,
+                        max_amount: maxAmount,
+                        end_date: endDate,
+                      },
+                      db
+                    )
+                      .then((value) => {
+                        console.log("Paul was here", value);
+                        setBudgets([value, ...budgets]);
+                        Alert.alert("Adding data", "success");
+                        setOpen(false);
+                      })
+                      .catch((err) => {
+                        console.error("failed: ", err);
+                        Alert.alert("Adding data", "failed");
+                      });
+                  }}
+                  className="flex flex-row items-center justify-center p-3 bg-[#228b22] rounded-xl w-[150px]"
+                >
+                  <Text className="font-extrabold text-2xl text-white">
+                    Submit
+                  </Text>
                 </Pressable>
               </View>
             </View>
           </View>
         </Modal>
         <Pressable
-      style={{
-        backgroundColor: Colors[colorScheme ?? 'light'].barColor
-      }}
+          style={{
+            backgroundColor: Colors[colorScheme ?? "light"].barColor,
+          }}
           className="border-[1px] p-3 rounded-full absolute bottom-[240px] right-[33px]"
           onPress={() => {
             setOpen(true);
@@ -264,82 +256,3 @@ export default function Budget() {
     </View>
   );
 }
-
-/*
-<View>
-        <View>
-          <Text>Enter budget amount:</Text>
-          <TextInput
-            onChangeText={(text) => {
-              setMaxAmount(200);
-            }}
-          />
-        </View>
-          <View>
-            <Text>Enter End Date(yyyy-mm-dd):</Text>
-            <TextInput
-              onChangeText={(text) => {
-                setEndDate(Date.parse(text));
-              }}
-            />
-          </View>
-          <View>
-            <Text>Enter Name :</Text>
-            <TextInput
-            value={name}
-              onChangeText={(text) => {
-                setName(text);
-              }}
-            />
-          </View>
-        <View>
-          <Button
-          title="Submit"
-          onPress={(e)=>{
-            e.defaultPrevented=true;
-            addBudget({name: name, max_amount: maxAmount, end_date: endDate}, db)
-              .then(async (result)=>{
-                const data = await findBudgetRowById(result.lastInsertRowId, db);
-                setOutput(data);
-                console.log("done")
-              })
-            .catch((err)=>{
-              console.log(err)
-            })
-          }}
-          />
-        </View>
-        <View>
-          <Text>
-            {output?.name}
-          </Text>
-          <Text>
-            {output?.max_amount}
-          </Text>
-          <Text>
-            {output?.set_date}
-          </Text>
-          <Text>
-            {output?.end_date}
-          </Text>
-          <Text> 
-            {output?.used}
-          </Text>
-        </View>
-      </View>
-*/
-
-/*
-
-      <Dialouge open={open} setOpen={setOpen}>
-      <DialougeTrigger setOpen={setOpen}/>
-      <DialougeContent content="This is a sample dialouge"/>
-      <DialougeAction title="Add Record" onClick={()=>{
-        console.log('adding a record');
-      }}/>
-      <DialougeClose title="Close" close={(newVal)=>{
-        console.log('Cancelling record adding process');
-        setOpen(newVal);
-      }}/>
-      </Dialouge>
-*/
