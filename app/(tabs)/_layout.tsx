@@ -3,9 +3,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import {Drawer} from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useContext, useState } from 'react';
+import { UserContext } from '@/hooks/useUserContext';
+import LoginPage from '@/components/login_component';
 
 export default function SideBar(){
-  const colorScheme = useColorScheme()
+  const colorScheme = useColorScheme();
+  const {token} = useContext(UserContext);
+
+  if(!token){
+    return <LoginPage/>
+  }
+
+
   return(
     <GestureHandlerRootView>
       <Drawer
@@ -37,14 +47,14 @@ export default function SideBar(){
         name='settings'
         options={{
           drawerLabel: 'Settings',
-          title: 'Settings-Title',
+          title: 'Settings',
         }}
         />
         <Drawer.Screen
         name='feedback'
         options={{
           drawerLabel: 'Feedback',
-          title: 'Feedback-Title',
+          title: 'Send us Feedback',
         }}
         />
         <Drawer.Screen

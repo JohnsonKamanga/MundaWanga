@@ -1,5 +1,7 @@
 import { Text, View, TextInput, TouchableOpacity, Alert, Switch } from 'react-native';
 import React, { useState } from 'react';
+import axios from 'axios';
+import { baseurl } from '@/constants/url';
 
 export default function Feedback() {
   const [name, setName] = useState('');
@@ -15,16 +17,26 @@ export default function Feedback() {
     } else {
       Alert.alert('Feedback Submitted', `Name: ${name}\nEmail: ${email}\nFeedback: ${feedback}`);
     }
+
+    axios.post(`${baseurl}/feedback`,{
+      message: feedback,
+      user_id: 1,
+    }).then((addedMessage)=>{
+      console.log('success: ',addedMessage.data?.message);
+    })
+    .catch((err)=>{
+      console.error('An error occured: ', err);
+    })
   };
 
   const toggleDarkMode = () => setIsDarkMode((prevMode) => !prevMode);
 
   return (
-    <View className={isDarkMode ? 'bg-gray-900 flex-1 items-center justify-center' : 'bg-gray-100 flex-1 items-center justify-center'}>
-      <View className={isDarkMode ? 'bg-gray-800 w-11/12 rounded-lg' : 'bg-white w-11/12 rounded-lg'}>
-        <View className={isDarkMode ? 'bg-green-600 py-5 items-center' : 'bg-green-600 py-5 items-center'}>
+    <View className={isDarkMode ? 'bg-gray-900 flex-1 items-center justify-center ' : 'bg-gray-100 flex-1 items-center justify-center'}>
+      <View className={isDarkMode ? 'bg-gray-800 w-11/12 rounded-lg border border-green-500' : 'bg-white w-11/12 rounded-lg border border-green-500'}>
+        {/* <View className={isDarkMode ? 'bg-green-600 py-5 items-center' : 'bg-green-600 py-5 items-center'}>
           <Text className="text-white text-xl font-bold">Send Us Feedback</Text>
-        </View>
+        </View> */}
 
         <View className="p-6">
           <Text className={isDarkMode ? 'text-gray-200 text-lg mb-2 font-bold' : 'text-gray-800 text-lg mb-2 font-bold'}>Name</Text>
