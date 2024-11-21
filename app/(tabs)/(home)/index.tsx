@@ -24,7 +24,7 @@ export default function HomeScreen() {
           <CardBody className="flex flex-row x-2 items-centre">
           
           <View className="p-2">
-``          <Text>Amount: k20,000</Text>
+          <Text>Amount: k20,000</Text>
             </View>
             <View
             style={{
