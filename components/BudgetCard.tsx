@@ -1,23 +1,36 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Card, CardBody, CardFooter, CardHeader } from "./Card";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Text } from "react-native";
 import { ProgressBar } from "./ProgressBar";
 import { TBudget } from "@/model/finances/budget";
 import { formatRelative } from "date-fns";
+import { useColorScheme } from "nativewind";
 
-export default function BudgetCard({
-  budget,
-}: {
-  budget: TBudget;
-}) {
+export default function BudgetCard({ budget, setTargetBudget, setUpdate, setDelete }: { budget: TBudget, setTargetBudget: React.Dispatch<React.SetStateAction<TBudget | undefined>>, setUpdate: React.Dispatch<React.SetStateAction<boolean>>, setDelete: React.Dispatch<React.SetStateAction<boolean>> }) {
+  const {colorScheme} = useColorScheme();
   return (
     <Card className="my-1 ml-3">
       <CardHeader
         content={budget.name}
         containerClassName="flex flex-row w-full items-center justify-between"
       >
-        <Ionicons name="ellipsis-vertical-outline" size={20} />
+        <Pressable
+        onPress={()=>{
+          setTargetBudget(budget);
+          setUpdate(true);
+        }}
+        >
+        <Ionicons name="create-outline" size={20} color={colorScheme === "light" ? "black" : "white"} />
+        </Pressable>
+        <Pressable
+        onPress={()=>{
+          setTargetBudget(budget);
+          setDelete(true);
+        }}
+        >
+        <Ionicons name="trash-outline" size={20} color={colorScheme === "light" ? "black" : "white"} />
+        </Pressable>
       </CardHeader>
       <CardBody className="w-[80%]">
         <View className="flex flex-row">
