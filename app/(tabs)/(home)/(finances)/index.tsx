@@ -1,6 +1,6 @@
 import {
   addBudget,
-  FindAllBudgets,
+  findAllBudgets,
   TBudget,
   TSubmitData,
 } from "@/model/finances/budget";
@@ -32,6 +32,8 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { UpdateBudgetModal } from "@/components/UpdateBudgetModal";
+import { DeleteBudgetDialog } from "@/components/DeleteBudgetDialougue";
 
 export default function Budget() {
   const [budgets, setBudgets] = useState<TBudget[] | TSubmitData[]>([]);
@@ -42,25 +44,29 @@ export default function Budget() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [updateBudget, setUpdateBudget] = useState(false);
+  const [targetUpdateBudget, setTargetUpdateBudget] = useState<TBudget>();
+  const [deleteRecord, setDeleteRecord] = useState(false);
   const db = useSQLiteContext();
   useDrizzleStudio(db);
   const { colorScheme } = useColorScheme();
 
   const mapBudgets = (budget: TBudget) => {
-    return <BudgetCard budget={budget} key={budget.id} />;
+    return <BudgetCard budget={budget} key={budget.id} setUpdate={setUpdateBudget} setTargetBudget={setTargetUpdateBudget} setDelete={setDeleteRecord}/>;
   };
 
   useEffect(() => {
     setLoading(true);
-    FindAllBudgets(db)
+    findAllBudgets(db)
       .then((budgets) => {
         setBudgets(budgets);
         console.log("fetch successful");
+        setLoading(false);
       })
       .catch((err) => {
         console.error("failed to get records: ", err);
+        setLoading(false);
       });
-    setLoading(false);
   }, []);
 
   return (
@@ -91,9 +97,28 @@ export default function Budget() {
           </Text>
         </View>
       ) : (
+        <>
         <ScrollView className="w-full gap-y-3">
           {budgets.map(mapBudgets)}
         </ScrollView>
+      { targetUpdateBudget &&
+      <>
+      <UpdateBudgetModal
+      targetUpdateBudget={targetUpdateBudget}
+      setTargetUpdateBudget={setTargetUpdateBudget}
+      budgets={budgets}
+      setBudgets={setBudgets}
+      open={updateBudget}
+      setOpen={setUpdateBudget}
+      showDatePicker={showDatePicker}
+      setShowDatePicker={setShowDatePicker}
+      />
+      <DeleteBudgetDialog
+      visible={deleteRecord}
+      setVisible={setDeleteRecord}
+      targetBudget={targetUpdateBudget}
+      />
+      </>}</>
       )}
       <BudgetModal
         name={name}
