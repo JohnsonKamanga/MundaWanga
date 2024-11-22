@@ -1,18 +1,13 @@
 import React, { useState } from 'react';  
-import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Switch, ScrollView, Linking } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, ScrollView, Linking } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useColorScheme } from 'react-native';
 import { Mail, Phone } from 'lucide-react-native';
 
 const AccountPage = () => {
   const [image, setImage] = useState('');
-  const [password, setPassword] = useState('********');
   const [dob, setDob] = useState('19-12-2005');
   const [location, setLocation] = useState('Zomba');
   const [isEditing, setIsEditing] = useState(false);
-  const [showPhone, setShowPhone] = useState(true);
-  const [showEmail, setShowEmail] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -30,199 +25,100 @@ const AccountPage = () => {
   };
 
   const handleEmailSupport = () => {
-    Linking.openURL('mailto:support@MundaWangacom');
+    Linking.openURL('mailto:support@MundaWanga.com');
   };
 
   const handlePhoneSupport = () => {
     Linking.openURL('tel:+265984099754');
   };
 
-  const colorScheme = useColorScheme();
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
-  const theme = {
-    background: isDarkMode ? '#0a192f' : '#F3F4F6',
-    cardBackground: isDarkMode ? '#112240' : '#FFFFFF',
-    primaryText: isDarkMode ? '#e6f1ff' : '#333333',
-    secondaryText: isDarkMode ? '#8892b0' : '#666666',
-    labelText: isDarkMode ? '#a8b2d1' : '#444444',
-    inputBackground: isDarkMode ? '#1e2d4d' : '#FFFFFF',
-    inputBorder: isDarkMode ? '#234173' : '#DDDDDD',
-    accent: isDarkMode ? '#64ffda' : '#007BFF',
-    switchTrack: isDarkMode ? '#1e2d4d' : '#E4E6EB',
-    imagePlaceholder: isDarkMode ? '#1e2d4d' : '#e0e0e0',
-    shadowColor: isDarkMode ? '#050d1a' : '#000000',
-  };
-
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
-      <View style={[styles.profileSection, { 
-        backgroundColor: theme.cardBackground,
-        shadowColor: theme.shadowColor,
-      }]}>
-       <TouchableOpacity onPress={pickImage} style={[styles.profileImageContainer, {
-          backgroundColor: theme.imagePlaceholder
-        }]}>
+    <ScrollView style={styles.container}>
+      <View style={styles.profileSection}>
+        <TouchableOpacity onPress={pickImage} style={styles.profileImageContainer}>
           {image ? (
             <Image source={{ uri: image }} style={styles.profilePic} />
           ) : (
-            <Text style={[styles.imagePlaceholder, { color: theme.secondaryText }]}>
+            <Text style={styles.imagePlaceholder}>
               Tap to Add Image
             </Text>
           )}
         </TouchableOpacity>
-        <Text style={[styles.name, { color: theme.primaryText }]}>Kai Chimala</Text>
-        <Text style={[styles.email, { color: theme.secondaryText }]}>kaimomo2005@gmail.com.com</Text>
+        <Text style={styles.name}>Kai Chimala</Text>
+        <Text style={styles.email}>kaimomo2005@gmail.com</Text>
       </View>
 
-      <View style={[styles.detailsSection, { 
-        backgroundColor: theme.cardBackground,
-        shadowColor: theme.shadowColor,
-      }]}>
-        <Text style={[styles.sectionTitle, { color: theme.primaryText }]}>Account Details</Text>
+      <View style={styles.detailsSection}>
+        <Text style={styles.sectionTitle}>Account Details</Text>
         <View style={styles.detailItem}>
-          <Text style={[styles.detailLabel, { color: theme.labelText }]}>Phone Number:</Text>
-          {showPhone && <Text style={[styles.detailValue, { color: theme.secondaryText }]}>+265 999 888 777</Text>}
+          <Text style={styles.detailLabel}>Phone Number:</Text>
+          <Text style={styles.detailValue}>+265 999 888 777</Text>
         </View>
         <View style={styles.detailItem}>
-          <Text style={[styles.detailLabel, { color: theme.labelText }]}>Farm Name:</Text>
-          <Text style={[styles.detailValue, { color: theme.secondaryText }]}>Chimala Farm</Text>
+          <Text style={styles.detailLabel}>Farm Name:</Text>
+          <Text style={styles.detailValue}>Chimala Farm</Text>
         </View>
       </View>
 
-      <View style={[styles.detailsSection, { 
-        backgroundColor: theme.cardBackground,
-        shadowColor: theme.shadowColor,
-      }]}>
-        <Text style={[styles.sectionTitle, { color: theme.primaryText }]}>About</Text>
+      <View style={styles.detailsSection}>
+        <Text style={styles.sectionTitle}>About</Text>
         <View style={styles.detailItem}>
-          <Text style={[styles.detailLabel, { color: theme.labelText }]}>Password:</Text>
+          <Text style={styles.detailLabel}>Date of Birth:</Text>
           {isEditing ? (
             <TextInput
-              style={[styles.textInput, { 
-                backgroundColor: theme.inputBackground,
-                borderColor: theme.inputBorder,
-                color: theme.primaryText 
-              }]}
-              value={password}
-              onChangeText={setPassword}
-              onBlur={() => setIsEditing(false)}
-            />
-          ) : (
-            <Text style={[styles.detailValue, { color: theme.secondaryText }]} onPress={() => setIsEditing(true)}>
-              {password}
-            </Text>
-          )}
-        </View>
-        <View style={styles.detailItem}>
-          <Text style={[styles.detailLabel, { color: theme.labelText }]}>Date of Birth:</Text>
-          {isEditing ? (
-            <TextInput
-              style={[styles.textInput, { 
-                backgroundColor: theme.inputBackground,
-                borderColor: theme.inputBorder,
-                color: theme.primaryText 
-              }]}
+              style={styles.textInput}
               value={dob}
               onChangeText={setDob}
               onBlur={() => setIsEditing(false)}
             />
           ) : (
-            <Text style={[styles.detailValue, { color: theme.secondaryText }]} onPress={() => setIsEditing(true)}>
+            <Text style={styles.detailValue} onPress={() => setIsEditing(true)}>
               {dob}
             </Text>
           )}
         </View>
         <View style={styles.detailItem}>
-          <Text style={[styles.detailLabel, { color: theme.labelText }]}>Location:</Text>
+          <Text style={styles.detailLabel}>Location:</Text>
           {isEditing ? (
             <TextInput
-              style={[styles.textInput, { 
-                backgroundColor: theme.inputBackground,
-                borderColor: theme.inputBorder,
-                color: theme.primaryText 
-              }]}
+              style={styles.textInput}
               value={location}
               onChangeText={setLocation}
               onBlur={() => setIsEditing(false)}
             />
           ) : (
-            <Text style={[styles.detailValue, { color: theme.secondaryText }]} onPress={() => setIsEditing(true)}>
+            <Text style={styles.detailValue} onPress={() => setIsEditing(true)}>
               {location}
             </Text>
           )}
         </View>
       </View>
-      
-      <View style={[styles.detailsSection, { 
-        backgroundColor: theme.cardBackground,
-        shadowColor: theme.shadowColor,
-      }]}>
-        <Text style={[styles.sectionTitle, { color: theme.primaryText }]}>Profile Privacy</Text>
-        <View style={styles.detailItem}>
-          <Text style={[styles.detailLabel, { color: theme.labelText }]}>Show Phone Number:</Text>
-          <Switch 
-            value={showPhone} 
-            onValueChange={setShowPhone}
-            trackColor={{ false: theme.switchTrack, true: theme.accent }}
-          />
-        </View>
-        <View style={styles.detailItem}>
-          <Text style={[styles.detailLabel, { color: theme.labelText }]}>Show Email Address:</Text>
-          <Switch 
-            value={showEmail} 
-            onValueChange={setShowEmail}
-            trackColor={{ false: theme.switchTrack, true: theme.accent }}
-          />
-        </View>
-      </View>
 
-      <View style={[styles.detailsSection, { 
-        backgroundColor: theme.cardBackground,
-        shadowColor: theme.shadowColor,
-      }]}>
-        <Text style={[styles.sectionTitle, { color: theme.primaryText }]}>Appearance</Text>
-        <View style={styles.detailItem}>
-          <Text style={[styles.detailLabel, { color: theme.labelText }]}>Dark Mode:</Text>
-          <Switch 
-            value={isDarkMode} 
-            onValueChange={toggleTheme}
-            trackColor={{ false: theme.switchTrack, true: theme.accent }}
-          />
-        </View>
-      </View>
-
-      <View style={[styles.detailsSection, { 
-        backgroundColor: theme.cardBackground,
-        shadowColor: theme.shadowColor,
-      }]}>
-        <Text style={[styles.sectionTitle, { color: theme.primaryText }]}>Contact Us</Text>
+      <View style={styles.detailsSection}>
+        <Text style={styles.sectionTitle}>Contact Us</Text>
         
-        <Text style={[styles.supportText, { color: theme.secondaryText }]} >
+        <Text style={styles.supportText}>
           Need help? Choose your preferred way to contact our support team:
         </Text>
 
         <View style={styles.supportOptionsContainer}>
           <TouchableOpacity 
-            style={[styles.supportOption, { backgroundColor: theme.accent + '20' }]}
+            style={styles.supportOption}
             onPress={handleEmailSupport}
           >
-            <Mail color={theme.accent} size={24} />
-            <Text style={[styles.supportOptionTitle, { color: theme.primaryText }]}>Email Support</Text>
-            <Text style={[styles.supportOptionDesc, { color: theme.secondaryText }]}>
+            <Mail color="#007BFF" size={24} />
+            <Text style={styles.supportOptionTitle}>Email Support</Text>
+            <Text style={styles.supportOptionDesc}>
               Get help via email.
             </Text>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={[styles.supportOption, { backgroundColor: theme.accent + '20' }]}
+            style={styles.supportOption}
             onPress={handlePhoneSupport}
           >
-            <Phone color={theme.accent} size={24} />
-            <Text style={[styles.supportOptionTitle, { color: theme.primaryText }]}>Call Support</Text>
-            <Text style={[styles.supportOptionDesc, { color: theme.secondaryText }]}>
+            <Phone color="#007BFF" size={24} />
+            <Text style={styles.supportOptionTitle}>Call Support</Text>
+            <Text style={styles.supportOptionDesc}>
               Reach us by phone.
             </Text>
           </TouchableOpacity>
@@ -236,12 +132,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#F3F4F6',
   },
   profileSection: {
     alignItems: 'center',
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 10,
@@ -253,6 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
+    backgroundColor: '#e0e0e0',
   },
   profilePic: {
     width: '100%',
@@ -262,19 +162,23 @@ const styles = StyleSheet.create({
   imagePlaceholder: {
     fontSize: 14,
     fontWeight: 'bold',
+    color: '#666666',
   },
   name: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#333333',
   },
   email: {
     fontSize: 14,
-    color: '#666',
+    color: '#666666',
   },
   detailsSection: {
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 10,
@@ -283,6 +187,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#333333',
   },
   detailItem: {
     flexDirection: 'row',
@@ -292,10 +197,12 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 16,
     fontWeight: '500',
+    color: '#444444',
   },
   detailValue: {
     fontSize: 16,
     fontWeight: '400',
+    color: '#666666',
   },
   textInput: {
     height: 40,
@@ -303,10 +210,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     fontSize: 16,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#DDDDDD',
+    color: '#333333',
   },
   supportText: {
     fontSize: 14,
     fontWeight: '400',
+    color: '#666666',
     marginBottom: 10,
   },
   supportOptionsContainer: {
@@ -320,15 +231,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgba(0, 123, 255, 0.1)',
   },
   supportOptionTitle: {
     fontSize: 16,
     fontWeight: '500',
     marginTop: 10,
+    color: '#333333',
   },
   supportOptionDesc: {
     fontSize: 14,
-    color: '#666',
+    color: '#666666',
   },
 });
 
