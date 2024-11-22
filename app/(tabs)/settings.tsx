@@ -29,13 +29,13 @@ export default function Settings() {
   })
   };
 
-  const handleExportData = () => {
-    Alert.alert('Export Data', 'Data exported successfully.');
-  };
+  // const handleExportData = () => {
+  //   Alert.alert('Export Data', 'Data exported successfully.');
+  // };
 
-  const handleImportData = () => {
-    Alert.alert('Import Data', 'Data imported successfully.');
-  };
+  // const handleImportData = () => {
+  //   Alert.alert('Import Data', 'Data imported successfully.');
+  // };
 
   const handleClearCache = () => {
     Alert.alert('Clear Cache', 'cache cleared.');
@@ -89,19 +89,19 @@ export default function Settings() {
         {/****** Data Management *****/}
         <Text className={isDarkMode ? 'text-gray-200 text-xl font-bold mt-2 border-b border-primary' : 'text-gray-800 text-xl font-bold mt-2 border-b border-primary'}>Data Management</Text>
         <View className="mt-2">
-          <View className="flex-row justify-between items-center mb-4">
+          {/* <View className="flex-row justify-between items-center mb-4">
             <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Export Data</Text>
             <TouchableOpacity onPress={handleExportData}>
               <Text className="text-primary text-lg">Export</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
-          <View className="flex-row justify-between items-center mb-4">
+          {/* <View className="flex-row justify-between items-center mb-4">
             <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Import Data</Text>
             <TouchableOpacity onPress={handleImportData}>
               <Text className="text-primary text-lg">Import</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           <View className="flex-row justify-between items-center mb-4">
             <TouchableOpacity onPress={handleBackupAndSync}>
