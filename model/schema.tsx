@@ -23,7 +23,8 @@ export function createBudgetTable(db: SQLiteDatabase):Promise<any>{
     CREATE TABLE IF NOT EXISTS  budget (
     id INTEGER PRIMARY KEY NOT NULL , 
     name VARCHAR(20) , 
-    set_date DATETIME DEFAULT CURRENT_TIMESTAMP , 
+    set_date DATETIME DEFAULT CURRENT_TIMESTAMP ,
+    last_modified DATETIME DEFAULT CURRENT_TIMESTAMP , 
     end_date DATETIME NOT NULL , 
     max_amount REAL NOT NULL , 
     used REAL DEFAULT 0 NOT NULL );
