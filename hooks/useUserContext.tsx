@@ -6,26 +6,26 @@ interface IToken {
 }
 
 interface IUserContext{
-    setToken: React.Dispatch<React.SetStateAction<IToken | null | undefined>> | null;
-    token: IToken | null;
+    setToken: React.Dispatch<React.SetStateAction<IToken | undefined>>;
+    token: IToken | undefined;
 }
 
 export const UserContext = createContext<IUserContext>({
-    token: null,
-    setToken: null,
+    token: undefined,
+    setToken: ()=>{},
 });
 
 
 export function useUserContext(){
     const getToken = ()=>{
         const tokenString = getItem('token');
-        const userToken = tokenString? JSON.parse(tokenString) : null;
+        const userToken = tokenString? JSON.parse(tokenString) : undefined;
         return userToken;
     }
 
-    const [token, setToken] = useState<IToken | null | undefined>(getToken());
+    const [token, setToken] = useState<IToken | undefined>(getToken());
 
-    const saveToken = (userToken : IToken)=>{
+    const saveToken = (userToken : React.SetStateAction<IToken | undefined>)=>{
         setItem('token',JSON.stringify(userToken));
         setToken(userToken);
     }
