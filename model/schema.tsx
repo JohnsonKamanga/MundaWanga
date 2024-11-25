@@ -17,3 +17,17 @@ export function createBudgetTable(db: SQLiteDatabase): Promise<any> {
     used REAL DEFAULT 0 NOT NULL );
        `);
 }
+
+export function createRecordTable(db: SQLiteDatabase): Promise<any> {
+  return db.runAsync(`
+      CREATE TABLE IF NOT EXISTS  record (
+      id INTEGER PRIMARY KEY NOT NULL , 
+      last_modified DATETIME DEFAULT CURRENT_TIMESTAMP ,
+      set_date DATETIME DEFAULT CURRENT_TIMESTAMP ,
+      schema_id INTEGER NOT NULL,
+      fields TEXT NOT NULL ,
+      FOREIGN KEY (schema_id)
+        REFERENCES record_schema (id)
+      );
+          `);
+}
