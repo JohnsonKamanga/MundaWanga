@@ -4,6 +4,7 @@ import axios from 'axios';
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import SignupScreen from './signup';
 
 const LoginPage = () => {
   interface IUser {
@@ -31,7 +32,9 @@ const LoginPage = () => {
           console.error('error occured: ', err)
         })
   };
-
+const handleRegister=()=>{
+  <SignupScreen/>
+}
   return (
     <View style={styles.container}>
       <Text style={styles.title}>MundaWanga</Text>
@@ -53,6 +56,8 @@ const LoginPage = () => {
       />
       {errors.password && <Text style={styles.error}>Password is required</Text>}
       <Button title="Login" onPress={onSubmit} />
+      <Text>Dont have an account?</Text>
+      <Button title="register" onPress={handleRegister} />
     </View>
   );
 };
