@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Alert,
   Pressable,
+  useColorScheme,
 } from "react-native";
 import { FAB, Menu, PaperProvider, Portal } from "react-native-paper";
 import {
@@ -21,8 +22,10 @@ import { useSQLiteContext } from "expo-sqlite";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Ionicons } from "@expo/vector-icons";
 import { DynamicForm } from "@/components/DynamicForm";
+import { Colors } from "@/constants/Colors";
+import { RecordForm } from "@/components/RecordForm";
 
-interface Record {
+export interface TRecord {
   id?: number;
   type: "livestock" | "crop";
   name: string;
@@ -33,60 +36,29 @@ interface Record {
 }
 
 export default function Records() {
-  const [records, setRecords] = useState<Record[]>([]);
+  const [records, setRecords] = useState<TRecord[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [record, setRecord] = useState<Record>({
-    type: "livestock",
-    name: "",
-    description: "",
-    quantity: "",
-    breedOrVariety: "",
-    date: "",
-  });
   const [showMenu, setShowMenu] = useState(false);
   const [showRecordSchemaForm, setShowRecordSchemaForm] = useState(false);
   const db = useSQLiteContext();
   const [isDynamicFormVisible, setIsDynamicFormVisible] = useState(false);
+  const colorScheme = useColorScheme();
+
+  const loadRecords = async () => {
+    const storedRecords: TRecord[] = [];
+    const jsonRecords = await findAllRecords(db);
+    for (let i = 0; i < jsonRecords.length; i++) {
+      storedRecords.push(parseRecord(jsonRecords[i]));
+    }
+    console.log(storedRecords);
+    setRecords(storedRecords);
+  };
 
   useEffect(() => {
     loadRecords();
   }, []);
 
-  const loadRecords = async () => {
-    const storedRecords: Record[] = [];
-    const jsonRecords = await findAllRecords(db);
-    for (let i = 0; i < jsonRecords.length; i++) {
-      storedRecords.push(parseRecord(jsonRecords[i]));
-    }
-    setRecords(storedRecords);
-  };
-
-  const saveRecord = async () => {
-    if (!record.name || !record.quantity || !record.date) {
-      Alert.alert("Error", "All fields are required.");
-      return;
-    }
-
-    addRecord({ fields: JSON.stringify(record) }, db)
-      .then(() => {
-        loadRecords();
-      })
-      .catch((err) => {
-        console.error("Error when storing record", err);
-      });
-
-    setRecord({
-      type: "livestock",
-      name: "",
-      description: "",
-      quantity: "",
-      breedOrVariety: "",
-      date: "",
-    });
-    setIsFormVisible(false);
-  };
-
-  const viewRecordDetails = (item: Record) => {
+  const viewRecordDetails = (item: TRecord) => {
     Alert.alert(
       "Record Details",
       `Type: ${item.type === "livestock" ? "Animal" : "Crop"}\nName: ${
@@ -98,19 +70,21 @@ export default function Records() {
   };
 
   const removeRecord = async (index: number) => {
-    deleteRecord(records[index]?.id, db)
-      .then((deleted) => {
-        if (deleted) loadRecords();
-        else {
-          console.error("Failed to delete record");
-        }
-      })
-      .catch((err) => {
-        console.error(err, "Failed to delete record");
-      });
+    if (records[index]?.id) {
+      deleteRecord(records[index]?.id, db)
+        .then((deleted) => {
+          if (deleted) loadRecords();
+          else {
+            console.error("Failed to delete record");
+          }
+        })
+        .catch((err) => {
+          console.error(err, "Failed to delete record");
+        });
+    }
   };
 
-  const renderItem = ({ item, index }: { item: Record; index: number }) => (
+  const renderItem = ({ item, index }: { item: TRecord; index: number }) => (
     <View style={formStyles.recordContainer}>
       <View style={formStyles.recordHeader}>
         <Icon
@@ -123,7 +97,7 @@ export default function Records() {
           {item.type === "livestock" ? "Livestock Record" : "Crop Record"}
         </Text>
       </View>
-      <Text>Name: {item.name}</Text>
+      <Text>Name: {item?.Quantity}, id : {item.id}</Text>
       <Text>description: {item.description}</Text>
       <Text>
         {item.type === "livestock" ? "Breed" : "Variety"}: {item.breedOrVariety}
@@ -150,51 +124,11 @@ export default function Records() {
     <PaperProvider>
       <View style={formStyles.container}>
         {isFormVisible ? (
-          <View style={formStyles.form}>
-            <Text style={formStyles.formTitle}>Add New Record</Text>
-            <TextInput
-              style={formStyles.input}
-              placeholder="Name"
-              value={record.name}
-              onChangeText={(text) => setRecord({ ...record, name: text })}
-            />
-            <TextInput
-              style={formStyles.input}
-              placeholder="description"
-              value={record.description}
-              onChangeText={(text) =>
-                setRecord({ ...record, description: text })
-              }
-            />
-            <TextInput
-              style={formStyles.input}
-              placeholder="quantity"
-              value={record.quantity}
-              onChangeText={(text) => setRecord({ ...record, quantity: text })}
-            />
-            <TextInput
-              style={formStyles.input}
-              placeholder="Breed/Variety"
-              value={record.breedOrVariety}
-              onChangeText={(text) =>
-                setRecord({ ...record, breedOrVariety: text })
-              }
-            />
-            <TextInput
-              style={formStyles.input}
-              placeholder="Date etc 16 oct 2024 "
-              value={record.date}
-              onChangeText={(text) => setRecord({ ...record, date: text })}
-            />
-            <View style={formStyles.buttonContainer}>
-              <Button
-                title="Cancel"
-                onPress={() => setIsFormVisible(false)}
-                color="gray"
-              />
-              <Button title="Save" onPress={saveRecord} color="green" />
-            </View>
-          </View>
+          <RecordForm
+            loadRecords={loadRecords}
+            setIsFormVisible={setIsFormVisible}
+            records={records}
+          />
         ) : (
           <>
             <FlatList
@@ -223,32 +157,37 @@ export default function Records() {
               style={{
                 position: "absolute",
                 right: 20,
-                bottom: 30,
+                bottom: "15%",
               }}
             >
               <Menu
-                mode="elevated"
                 visible={showMenu}
                 onDismiss={() => {
                   setShowMenu(false);
                 }}
                 anchor={
-                  <Pressable
-                    className="bg-green-500 p-2 rounded-xl bottom-[120px]"
-                    onPress={() => setShowMenu(true)}
-                  >
-                    <Ionicons name="add" size={35} />
-                  </Pressable>
+                  <FAB
+                    icon="plus"
+                    onPress={() => {
+                      setShowMenu(true);
+                    }}
+                    color="white"
+                    style={{
+                      backgroundColor: Colors[colorScheme ?? "light"].barColor,
+                    }}
+                  />
                 }
               >
                 <Menu.Item
                   onPress={() => {
+                    setShowMenu(false);
                     setIsFormVisible(true);
                   }}
                   title="Create Record"
                 />
                 <Menu.Item
                   onPress={() => {
+                    setShowMenu(false);
                     setIsDynamicFormVisible(true);
                   }}
                   title="Create Record Schema"
@@ -322,11 +261,6 @@ export const formStyles = StyleSheet.create({
   recordTitle: {
     fontSize: 16,
     fontWeight: "bold",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
   },
   viewMoreButton: {
     backgroundColor: "green",
