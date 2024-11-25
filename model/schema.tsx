@@ -31,3 +31,11 @@ export function createRecordTable(db: SQLiteDatabase): Promise<any> {
       );
           `);
 }
+export function createRecordSchemaTable(db: SQLiteDatabase): Promise<any> {
+  return db.runAsync(`
+      CREATE TABLE IF NOT EXISTS  record_schema (
+      id INTEGER PRIMARY KEY NOT NULL , 
+      name VARCHAR(20) NOT NULL UNIQUE,
+      fields TEXT NOT NULL );
+          `);
+}
