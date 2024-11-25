@@ -2,27 +2,14 @@ import { SQLiteDatabase } from "expo-sqlite";
 import { ColumnMapping, columnTypes, Repository } from "expo-sqlite-orm";
 import { createRecordSchemaTable } from "../schema";
 
-export type TRecordShema = {
+export type TRecordSchema = {
   id?: number;
+  name: string;
   fields: string;
 };
 
-const recordSchemamapping: ColumnMapping<TRecordShema> = {
+const recordSchemaMapping: ColumnMapping<TRecordSchema> = {
   id: { type: columnTypes.INTEGER },
+  name: { type: columnTypes.TEXT },
   fields: { type: columnTypes.JSON },
 };
-
-const recordSchemaRepository = new Repository(
-  "MundaWanga.db",
-  "record_schema",
-  recordSchemamapping
-);
-
-export async function addRecordSchema(
-  schema: TRecordShema,
-  db: SQLiteDatabase
-): Promise<TRecordShema> {
-  await createRecordSchemaTable(db);
-
-  return recordSchemaRepository.insert(schema);
-}
