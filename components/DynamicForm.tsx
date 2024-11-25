@@ -9,6 +9,7 @@ import {
   Alert,
   Button,
   FlatList,
+  KeyboardAvoidingView,
   Modal,
   Pressable,
   ScrollView,
@@ -35,6 +36,7 @@ export function DynamicForm({
   const [record, setRecord] = useState({});
   const [newFieldName, setNewFieldName] = useState("");
   const [newFieldType, setNewFieldType] = useState("");
+  const [schemaName, setSchemaName] = useState("");
   const [isModalVisisble, setisModalVisisble] = useState(false);
   const colorScheme = useColorScheme();
   const db = useSQLiteContext();
@@ -45,6 +47,7 @@ export function DynamicForm({
   const handleFormDone = () => {
     addRecordSchema(
       {
+        name: schemaName,
         fields: JSON.stringify(formFieldList),
       },
       db
@@ -84,9 +87,9 @@ export function DynamicForm({
           borderColor: "rgba(0,0,0,0.1)",
           marginBottom: 10,
           padding: 15,
-          minWidth: 250,
+          minWidth: "100%",
         }}
-        className="bg-gray-200 flex-row justify-between"
+        className="bg-gray-200 flex-row justify-between rounded-xl"
       >
         <Text>{item.fieldname}</Text>
         <View
@@ -100,159 +103,179 @@ export function DynamicForm({
   };
 
   return (
-    <View className="bg-white h-full absolute">
-      <Text className="dark:text-white font-bold text-3xl text-center mb-7 mt-3">
+    <View
+      style={{
+        backgroundColor: "rgba(0,0,0,0.9)",
+      }}
+      className="h-full absolute p-4"
+    >
+      <Text className="text-white font-bold text-3xl text-center mb-7 mt-3">
         Create New Record Schema
       </Text>
-      {formFieldList.length > 0 && (
-        <View className="p-3 flex flex-row gap-x-5 justify-center ">
+      <View
+        className="bg-white rounded-xl"
+        style={{
+          borderWidth: 1,
+          borderColor: "rgba(0,0,0,0.1)",
+        }}
+      >
+        <View className="p-10">
           <View>
-            <Text className="font-semibold text-xl">Field Name</Text>
-          </View>
-          <View
-            style={{
-              borderLeftWidth: 1,
-            }}
-          ></View>
-          <View>
-            <Text className="font-semibold text-xl">Field Type</Text>
+            <Text className="font-semibold text-lg">Schema Name</Text>
+            <FormField>
+              <TextInput
+                placeholder="Enter Schema Name"
+                value={schemaName}
+                onChangeText={(text) => {
+                  setSchemaName(text);
+                }}
+              />
+            </FormField>
           </View>
         </View>
-      )}
-      <View className="flex flex-col justify-center items-center min-h-[300px]">
-        <FlatList
-          data={formFieldList}
-          renderItem={renderFormFields}
-          ListEmptyComponent={() => (
-            <Text
-              style={{
-                textAlign: "center",
-                marginTop: 20,
-                fontSize: 16,
-                color: "gray",
+        <View className="flex flex-col justify-center items-center min-h-[250px]">
+          <Text className="font-semibold text-xl">Other fields</Text>
+          <FlatList
+            className="p-10"
+            data={formFieldList}
+            renderItem={renderFormFields}
+            ListEmptyComponent={() => (
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: 20,
+                  fontSize: 16,
+                  color: "gray",
+                }}
+              >
+                No Fields Added
+              </Text>
+            )}
+          />
+        </View>
+        <View className="p-10">
+          <View className="flex flex-row justify-end p-2">
+            <Pressable
+              onPress={() => {
+                setisModalVisisble(true);
               }}
+              style={{
+                backgroundColor: Colors[colorScheme ?? "light"].barColor,
+              }}
+              className="p-2 rounded-[6px] justify-end"
             >
-              No Fields Added
-            </Text>
-          )}
-        />
-      </View>
-      <View className="p-10">
-        <View className="flex flex-row justify-end p-2">
-          <Pressable
-            onPress={() => {
-              setisModalVisisble(true);
-            }}
-            style={{
-              backgroundColor: Colors[colorScheme ?? "light"].barColor,
-            }}
-            className="p-2 rounded-[6px] justify-end"
-          >
-            <Ionicons name="add" size={35} color={"white"} />
-          </Pressable>
+              <Ionicons name="add" size={35} color={"white"} />
+            </Pressable>
+          </View>
+          <View className="flex flex-row w-full justify-between items-center p-2">
+            <Pressable
+              onPress={handleFormClose}
+              className="p-4 bg-[#ff0000] rounded-[3px]"
+            >
+              <Text className="text-white font-semibold">Cancel</Text>
+            </Pressable>
+            <Pressable
+              disabled={
+                newFieldName === "" && newFieldType === "" && schemaName === ""
+              }
+              onPress={handleFormDone}
+              style={{
+                backgroundColor: Colors[colorScheme ?? "light"].barColor,
+              }}
+              className="p-4 rounded-[3px]"
+            >
+              <Text className="text-white font-semibold">Done</Text>
+            </Pressable>
+          </View>
         </View>
-        <View className="flex flex-row w-full justify-between items-center p-2">
-          <Pressable
-            onPress={handleFormClose}
-            className="p-2 bg-[#ff0000] rounded-[3px]"
-          >
-            <Text className="text-white font-semibold">Cancel</Text>
-          </Pressable>
-          <Pressable
-            onPress={handleFormDone}
-            style={{
-              backgroundColor: Colors[colorScheme ?? "light"].barColor,
-            }}
-            className="p-2 rounded-[3px]"
-          >
-            <Text className="text-white font-semibold">Done</Text>
-          </Pressable>
-        </View>
-      </View>
-      <View className="w-full min-h-screen h-full absolute">
-        <Modal visible={isModalVisisble} animationType="fade" transparent>
-          <View
-            style={{
-              backgroundColor: "rgba(0,0,0,0.5)",
-            }}
-            className="p-[40px] min-h-screen h-full items-center justify-center w-full rounded-lg"
-          >
+        <View className="w-full min-h-screen h-full absolute">
+          <Modal visible={isModalVisisble} animationType="fade" transparent>
             <View
               style={{
-                borderWidth: 1,
-                borderColor: "rgba(0,0,0,0.1)",
+                backgroundColor: "rgba(0,0,0,0.6)",
               }}
-              className="bg-white p-10 rounded-xl"
+              className="p-[40px] min-h-screen h-full items-center justify-center w-full rounded-lg"
             >
-              <View>
-                <Text className="font-bold text-center text-3xl mb-5">
-                  Enter Schema Details
-                </Text>
-              </View>
-              <View className="gap-y-3 ">
-                <View>
-                  <Text className="font-semibold text-lg">Field name</Text>
-                  <FormField className="p-3 bg-gray-50">
-                    <TextInput
-                      placeholder="Enter field name"
-                      value={newFieldName}
-                      onChangeText={(text) => {
-                        setNewFieldName(text);
-                      }}
-                    />
-                  </FormField>
-                </View>
-                <View>
-                  <Text className="font-semibold text-lg">Field Type</Text>
-                  <FormField className="p-0 bg-gray-50">
-                    <RNPickerSelect
-                      items={[
-                        { label: "Date", value: "Date" },
-                        { label: "Numeric", value: "Numeric" },
-                        { label: "Text", value: "Text" },
-                      ]}
-                      onValueChange={(value) => {
-                        setNewFieldType(value);
-                      }}
-                    />
-                  </FormField>
-                </View>
-              </View>
-              <View className="flex flex-row w-full justify-between items-center p-2">
-                <Pressable
-                  onPress={() => {
-                    setNewFieldName("");
-                    setNewFieldType("");
-                    setisModalVisisble(false);
-                  }}
-                  className="p-2 bg-[#ff0000] rounded-[3px]"
-                >
-                  <Text className="text-white font-semibold">Cancel</Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
-                    setFormFieldList([
-                      ...formFieldList,
-                      {
-                        fieldname: newFieldName,
-                        fieldType: newFieldType,
-                      },
-                    ]);
-                    setNewFieldName("");
-                    setNewFieldType("");
-                    setisModalVisisble(false);
-                  }}
+              <KeyboardAvoidingView behavior="position">
+                <View
                   style={{
-                    backgroundColor: Colors[colorScheme ?? "light"].barColor,
+                    borderWidth: 1,
+                    borderColor: "rgba(0,0,0,0.1)",
                   }}
-                  className="p-2 rounded-[3px]"
+                  className="bg-white p-10 rounded-xl"
                 >
-                  <Text className="text-white font-semibold">Done</Text>
-                </Pressable>
-              </View>
+                  <View>
+                    <Text className="font-bold text-center text-3xl mb-5">
+                      Enter Schema Details
+                    </Text>
+                  </View>
+                  <View className="gap-y-3 ">
+                    <View>
+                      <Text className="font-semibold text-lg">Field name</Text>
+                      <FormField className="p-4 bg-gray-50">
+                        <TextInput
+                          placeholder="Enter field name"
+                          value={newFieldName}
+                          onChangeText={(text) => {
+                            setNewFieldName(text);
+                          }}
+                        />
+                      </FormField>
+                    </View>
+                    <View>
+                      <Text className="font-semibold text-lg">Field Type</Text>
+                      <FormField className="p-0 bg-gray-50">
+                        <RNPickerSelect
+                          items={[
+                            { label: "Date", value: "Date" },
+                            { label: "Numeric", value: "Numeric" },
+                            { label: "Text", value: "Text" },
+                          ]}
+                          onValueChange={(value) => {
+                            setNewFieldType(value);
+                          }}
+                        />
+                      </FormField>
+                    </View>
+                  </View>
+                  <View className="flex flex-row w-full justify-between items-center p-2">
+                    <Pressable
+                      onPress={() => {
+                        setNewFieldName("");
+                        setNewFieldType("");
+                        setisModalVisisble(false);
+                      }}
+                      className="p-4 bg-[#ff0000] rounded-[3px]"
+                    >
+                      <Text className="text-white font-semibold">Cancel</Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        setFormFieldList([
+                          ...formFieldList,
+                          {
+                            fieldname: newFieldName,
+                            fieldType: newFieldType,
+                          },
+                        ]);
+                        setNewFieldName("");
+                        setNewFieldType("");
+                        setisModalVisisble(false);
+                      }}
+                      style={{
+                        backgroundColor:
+                          Colors[colorScheme ?? "light"].barColor,
+                      }}
+                      className="p-4 rounded-[3px]"
+                    >
+                      <Text className="text-white font-semibold">Done</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </KeyboardAvoidingView>
             </View>
-          </View>
-        </Modal>
+          </Modal>
+        </View>
       </View>
     </View>
   );
