@@ -13,3 +13,17 @@ const recordSchemaMapping: ColumnMapping<TRecordSchema> = {
   name: { type: columnTypes.TEXT },
   fields: { type: columnTypes.JSON },
 };
+const recordSchemaRepository = new Repository(
+  "MundaWanga.db",
+  "record_schema",
+  recordSchemaMapping
+);
+
+export async function addRecordSchema(
+  schema: TRecordSchema,
+  db: SQLiteDatabase
+): Promise<TRecordSchema> {
+  await createRecordSchemaTable(db);
+
+  return recordSchemaRepository.insert(schema);
+}
