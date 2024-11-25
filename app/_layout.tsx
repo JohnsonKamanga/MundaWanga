@@ -8,12 +8,14 @@ import "../global.css";
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SQLiteProvider } from 'expo-sqlite';
+import { UserContext, useUserContext } from '../hooks/useUserContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const {token, setToken} = useUserContext();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -30,12 +32,16 @@ export default function RootLayout() {
 
   return (
     <SQLiteProvider databaseName='MundaWanga.db'>
+    <UserContext.Provider
+    value={{token, setToken}}
+    >
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>
+    </UserContext.Provider>
     </SQLiteProvider>
   );
 }
