@@ -27,3 +27,26 @@ export async function addRecordSchema(
 
   return recordSchemaRepository.insert(schema);
 }
+export async function findRecordSchemaByName(
+  name: string,
+  db: SQLiteDatabase
+): Promise<TRecordSchema | null> {
+  await createRecordSchemaTable(db);
+  return recordSchemaRepository.findBy({ name: { eqauls: name } });
+}
+
+export async function findAllRecordSchemas(
+  db: SQLiteDatabase
+): Promise<TRecordSchema[]> {
+  await createRecordSchemaTable(db);
+  return recordSchemaRepository.query();
+}
+
+export function parseRecordSchema(schema: TRecordSchema) {
+  const { fields, ...others } = schema;
+  const fieldsObj = JSON.parse(fields);
+  return {
+    ...others,
+    fields: fieldsObj,
+  };
+}
