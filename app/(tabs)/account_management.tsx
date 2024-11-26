@@ -1,13 +1,22 @@
-import React, { useState } from 'react';  
-import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, ScrollView, Linking } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';  
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, ScrollView, Linking, Alert, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Mail, Phone } from 'lucide-react-native';
+import { UserContext } from '@/hooks/useUserContext';
+import axios from 'axios';
+import { baseurl } from '@/constants/url';
 
 const AccountPage = () => {
+  const {token} = useContext(UserContext);
   const [image, setImage] = useState('');
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [dob, setDob] = useState('19-12-2005');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [location, setLocation] = useState('Zomba');
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -24,6 +33,24 @@ const AccountPage = () => {
     }
   };
 
+  useEffect(()=>{
+    setLoading(true);
+    axios.get(`${baseurl}/user/account-info/${token?.username}`)
+    .then((userIno)=>{
+      setName(userIno.data.name);
+      setUsername(userIno.data.username);
+      setDob(userIno.data.dob);
+      setEmail(userIno.data.email);
+      setPhoneNumber(userIno.data.phone_number);
+      setLoading(false);
+    })
+    .catch((err)=>{
+      console.error('An error occured when fetching user data: ', err);
+      Alert.alert('Error', 'An error occured when fetching your user info');
+    })
+  }, []);
+
+
   const handleEmailSupport = () => {
     Linking.openURL('mailto:support@MundaWanga.com');
   };
@@ -33,6 +60,13 @@ const AccountPage = () => {
   };
 
   return (
+    <>
+    {
+    loading ?
+    <View className=' h-full items-center justify-center'>
+      <ActivityIndicator size={65} />
+    </View>
+    :
     <ScrollView style={styles.container}>
       <View style={styles.profileSection}>
         <TouchableOpacity onPress={pickImage} style={styles.profileImageContainer}>
@@ -44,15 +78,15 @@ const AccountPage = () => {
             </Text>
           )}
         </TouchableOpacity>
-        <Text style={styles.name}>Kai Chimala</Text>
-        <Text style={styles.email}>kaimomo2005@gmail.com</Text>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.email}>{email}</Text>
       </View>
 
       <View style={styles.detailsSection}>
         <Text style={styles.sectionTitle}>Account Details</Text>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Phone Number:</Text>
-          <Text style={styles.detailValue}>+265 999 888 777</Text>
+          <Text style={styles.detailValue}>{phoneNumber}</Text>
         </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Farm Name:</Text>
@@ -124,7 +158,8 @@ const AccountPage = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </ScrollView>
+    </ScrollView>}
+    </>
   );
 };
 

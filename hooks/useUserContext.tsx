@@ -3,6 +3,7 @@ import { createContext, useState } from "react";
 
 interface IToken {
     access_token: string,
+    username: string
 }
 
 interface IUserContext{
