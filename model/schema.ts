@@ -18,6 +18,17 @@ export function createBudgetTable(db: SQLiteDatabase): Promise<SQLite.SQLiteRunR
        `);
 }
 
+export function createRecordSchemaTable(db: SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
+  return db.runAsync(`
+      CREATE TABLE IF NOT EXISTS  record_schema (
+      id INTEGER PRIMARY KEY NOT NULL ,
+      last_modified DATETIME DEFAULT CURRENT_TIMESTAMP ,
+      set_date DATETIME DEFAULT CURRENT_TIMESTAMP , 
+      name VARCHAR(20) NOT NULL UNIQUE,
+      fields TEXT NOT NULL );
+          `);
+}
+
 export function createRecordTable(db: SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
   return db.runAsync(`
       CREATE TABLE IF NOT EXISTS  record (
@@ -29,16 +40,6 @@ export function createRecordTable(db: SQLiteDatabase): Promise<SQLite.SQLiteRunR
       FOREIGN KEY (schema_id)
         REFERENCES record_schema (id)
       );
-          `);
-}
-export function createRecordSchemaTable(db: SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
-  return db.runAsync(`
-      CREATE TABLE IF NOT EXISTS  record_schema (
-      id INTEGER PRIMARY KEY NOT NULL ,
-      last_modified DATETIME DEFAULT CURRENT_TIMESTAMP ,
-      set_date DATETIME DEFAULT CURRENT_TIMESTAMP , 
-      name VARCHAR(20) NOT NULL UNIQUE,
-      fields TEXT NOT NULL );
           `);
 }
 
@@ -64,21 +65,21 @@ export function createExpenseTable(db : SQLiteDatabase): Promise<SQLite.SQLiteRu
       set_date DATETIME DEFAULT CURRENT_TIMESTAMP ,
       quantity_used REAL NOT NULL,
       amount_of_money REAL MOT NULL,
-      description TEXT NOT NULL,
-      )
+      description TEXT NOT NULL
+      );
     `)
 }
 
 export function createIncomeTable(db : SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
   return db.runAsync(`
-      CREATE TABLE IF NOT EXIST income (
+      CREATE TABLE IF NOT EXISTS income (
       id INTEGER PRIMARY KEY NOT NULL,
       inventory_id INTEGER,
       last_modified DATETIME DEFAULT CURRENT_TIMESTAMP ,
       set_date DATETIME DEFAULT CURRENT_TIMESTAMP ,
       quantity_added REAL NOT NULL,
       amount_of_money REAL MOT NULL,
-      description TEXT NOT NULL,
-      )
+      description TEXT NOT NULL
+      );
     `)
 }
