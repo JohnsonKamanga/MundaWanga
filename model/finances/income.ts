@@ -60,7 +60,7 @@ export async function findIncomeById(
   db: SQLiteDatabase
 ): Promise<TIncome | null> {
   await createIncomeTable(db);
-  return incomeRepository.findBy({ id: { eqauls: id } });
+  return incomeRepository.findBy({ id: { equals: id } });
 }
 
 export async function findAllIncome(db: SQLiteDatabase): Promise<TIncome[]> {

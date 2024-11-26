@@ -38,7 +38,7 @@ export async function findInventoryById(
   db: SQLiteDatabase
 ): Promise<TInventory | null> {
   await createInventoryTable(db);
-  return inventoryRepository.findBy({ id: { eqauls: id } });
+  return inventoryRepository.findBy({ id: { equals: id } });
 }
 
 export async function findAllInventory(

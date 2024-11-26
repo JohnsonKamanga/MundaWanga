@@ -60,7 +60,7 @@ export async function findExpenseById(
   db: SQLiteDatabase
 ): Promise<TExpense | null> {
   await createExpenseTable(db);
-  return expenseRepository.findBy({ id: { eqauls: id } });
+  return expenseRepository.findBy({ id: { equals: id } });
 }
 
 export async function findAllExpenses(db: SQLiteDatabase): Promise<TExpense[]> {

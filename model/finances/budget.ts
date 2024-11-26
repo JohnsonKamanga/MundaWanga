@@ -52,7 +52,7 @@ export async function findBudgetRowById(
   db: SQLiteDatabase
 ): Promise<TBudget | TSubmitData | null> {
   await createBudgetTable(db);
-  return budgetRepository.findBy({ id: { eqauls: id } });
+  return budgetRepository.findBy({ id: { equals: id } });
 }
 
 export async function findAllBudgets(
