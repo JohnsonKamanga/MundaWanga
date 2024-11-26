@@ -1,133 +1,218 @@
-import { Text, View, Switch, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { 
+  Text, 
+  View, 
+  Switch, 
+  TouchableOpacity, 
+  Alert, 
+  ScrollView, 
+  useColorScheme
+} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { deleteItemAsync } from 'expo-secure-store';
 import { UserContext } from '@/hooks/useUserContext';
-
+import { Colors } from '@/constants/Colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from "expo-notifications";
+// import { useThemeContext } from '@/components/ThemeContext';
 
 export default function Settings() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [pushNotifications, setPushNotifications] = useState(false);
   const [budgetAlerts, setBudgetAlerts] = useState(false);
   const [dateFormat, setDateFormat] = useState('MM/DD/YYYY');
-  const {token, setToken} = useContext(UserContext);
+  const { token, setToken } = useContext(UserContext);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [notificationToken, setNorificationToken] = useState(null);
+  const colorScheme = useColorScheme();
+
+  // const { isDarkMode, toggleDarkMode } = useThemeContext();
   const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
-  const togglePushNotifications = () => setPushNotifications((prev) => !prev);
+
+  const color = Colors[colorScheme ?? 'light'];
+
+  // const togglePushNotifications = () => setPushNotifications((prev) => !prev);
+
+  // useEffect(() => {
+  //   Notifications.requestPermissionsAsync().then((permissionResponse) => {
+  //     if(permissionResponse.status === 'granted'){
+  //       Notification.registerForNotificationAsync().then((registrationResponse) => {
+  //         setNotificationToken(registrationResponse.token);
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //       })
+  //     }
+  //   } )
+  // })
+
+  const handleNotification = () => {
+    Alert.alert(
+      'Alert',
+      'Turn ON or OFF Notification',
+      [
+        { text: 'OFF', style: 'cancel' },
+        { text: 'ON', onPress: NotificationAlerts, style: 'destructive' }
+      ]
+    );
+  }
+
+  const NotificationAlerts = () => {
+
+  }
+
   const toggleBudgetAlerts = () => setBudgetAlerts((prev) => !prev);
 
-  const dateFormats = ['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD', 'MM DD,YYYY'];
+    const clearAsyncStorage = async () => {
+      try {
+        await AsyncStorage.clear();
+        Alert.alert('Cache Cleared', 'All cached data has been removed.');
+      } catch (error) {
+        Alert.alert('Error', 'Failed to clear cache. Please try again.');
+        console.error('Error clearing AsyncStorage:', error);
+      }
+    };
+
+  const handleClearCache = () => {
+    Alert.alert(
+      'Confirm Clear Cache',
+      'This will delete all cached data. Are you sure?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Clear', onPress: clearAsyncStorage, style: 'destructive' }
+      ]
+    );
+  };
 
   const handleLogout = () => {
     deleteItemAsync('token')
-    .then(()=>{
-      setToken(null);
-      console.log('token', token);
-    Alert.alert('Logout', 'Success.');
-  })
-  .catch((err)=>{
-    Alert.alert('Failed', 'logout');
-  })
-  };
-
-  const handleExportData = () => {
-    Alert.alert('Export Data', 'Data exported successfully.');
-  };
-
-  const handleImportData = () => {
-    Alert.alert('Import Data', 'Data imported successfully.');
-  };
-
-  const handleClearCache = () => {
-    Alert.alert('Clear Cache', 'cache cleared.');
-  };
-
-  const handleBackupAndSync = () => {
-    Alert.alert('Backup and Restore', 'Data has been restored.');
+      .then(() => {
+        setToken(null);
+        Alert.alert('Logout', 'You have been logged out successfully.');
+      })
+      .catch(() => {
+        Alert.alert('Logout Failed', 'There was an error logging out.');
+      });
   };
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View className={isDarkMode ? 'bg-gray-900 flex-1 p-6' : 'bg-gray-100 flex-1 p-6'}>
-        <Text className={isDarkMode ? 'text-white text-3xl mb-2 mt-8 font-bold border-b border-primary' : 'text-gray-900 text-3xl mb-2 mt-8 font-bold border-b border-primary'}>Settings</Text>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, backgroundColor: color.bg }}
+    >
+      <View style={{ flex: 1, padding: 24 }}>
+        <Text
+          style={{
+            color: color.text,
+            fontSize: 24,
+            fontWeight: 'bold',
+            marginBottom: 16,
+            marginTop: 32,
+            borderBottomWidth: 1,
+            borderBottomColor: color.borderColor,
+          }}
+        >
+          Settings
+        </Text>
 
-        {/****** General Section *****/}
-        <Text className={isDarkMode ? 'text-gray-200 text-xl font-bold mt-2 border-b border-primary' : 'text-gray-800 text-xl font-bold mt-2 border-b border-primary'}>General</Text>
-        <View className="mt-2">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Dark Theme</Text>
-            <Switch value={isDarkMode} onValueChange={toggleDarkMode} />
+        <Text
+          style={{
+            color: color.text,
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 16,
+            borderBottomWidth: 1,
+            borderBottomColor: color.borderColor,
+          }}
+        >
+          General
+        </Text>
+        <View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
+            <Text style={{ color: color.text, fontSize: 18 }}>Dark Theme</Text>
+            <Switch
+              value={isDarkMode}
+              onValueChange={toggleDarkMode}
+              trackColor={{ false: color.borderColor, true: color.text }}
+            />
           </View>
 
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Date</Text>
+          {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
+            <Text style={{ color: color.text, fontSize: 18 }}>Date Format</Text>
             <Picker
               selectedValue={dateFormat}
-              style={{ height: 50, width: 150, color: isDarkMode ? 'white' : 'black' }}
+              style={{ height: 50, width: 150, color: color.text }}
               onValueChange={(itemValue) => setDateFormat(itemValue)}
             >
               {dateFormats.map((format) => (
                 <Picker.Item key={format} label={format} value={format} />
               ))}
             </Picker>
+          </View> */}
+        </View>
+
+        <Text
+          style={{
+            color: color.text,
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 16,
+            borderBottomWidth: 1,
+            borderBottomColor: color.borderColor,
+          }}
+        >
+          Notifications
+        </Text>
+        <View>
+        <View>
+          <TouchableOpacity onPress={handleNotification} style={{ marginBottom: 16 }}>
+            <Text style={{ color: color.text, fontSize: 18 }}>Notification</Text>
+          </TouchableOpacity>
+        </View>
+
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
+            <Text style={{ color: color.text, fontSize: 18 }}>Budget Alerts</Text>
+            <Switch
+              value={budgetAlerts}
+              onValueChange={toggleBudgetAlerts}
+              trackColor={{ false: color.borderColor, true: color.text }}
+            />
           </View>
         </View>
 
-        {/****** Notification *****/}
-        <Text className={isDarkMode ? 'text-gray-200 text-xl font-bold mt-4 border-b border-primary' : 'text-gray-800 text-xl font-bold mt-4 border-b border-primary'}>Notification</Text>
-        <View className="mt-2">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Notifications</Text>
-            <Switch value={pushNotifications} onValueChange={togglePushNotifications} />
-          </View>
+        <Text
+          style={{
+            color: color.text,
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 16,
+            borderBottomWidth: 1,
+            borderBottomColor: color.borderColor,
+          }}
+        >
+          Notifications
+        </Text>
 
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Budget Alerts</Text>
-            <Switch value={budgetAlerts} onValueChange={toggleBudgetAlerts} />
-          </View>
+        <View>
+          <TouchableOpacity onPress={handleClearCache} style={{ marginBottom: 16 }}>
+            <Text style={{ color: color.text, fontSize: 18 }}>Clear Cache</Text>
+          </TouchableOpacity>
         </View>
 
-        {/****** Data Management *****/}
-        <Text className={isDarkMode ? 'text-gray-200 text-xl font-bold mt-2 border-b border-primary' : 'text-gray-800 text-xl font-bold mt-2 border-b border-primary'}>Data Management</Text>
-        <View className="mt-2">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Export Data</Text>
-            <TouchableOpacity onPress={handleExportData}>
-              <Text className="text-primary text-lg">Export</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Import Data</Text>
-            <TouchableOpacity onPress={handleImportData}>
-              <Text className="text-primary text-lg">Import</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View className="flex-row justify-between items-center mb-4">
-            <TouchableOpacity onPress={handleBackupAndSync}>
-              <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Backup and Restore</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View className="flex-row justify-between items-center mb-4">
-            <TouchableOpacity onPress={handleClearCache}>
-              <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Clear Cache</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/****** Account Management *****/}
-        <Text className={isDarkMode ? 'text-gray-200 text-xl font-bold mt-4 border-b border-primary' : 'text-gray-800 text-xl font-bold mt-4 border-b border-primary'}>Account</Text>
-        <View className="mt-2">
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Manage Accounts</Text>
-          </View>
-
-          <View className="flex-row justify-between items-center mb-4">
-            <TouchableOpacity onPress={handleLogout}>
-              <Text className={isDarkMode ? 'text-gray-200 text-lg' : 'text-gray-800 text-lg'}>Logout</Text>
-            </TouchableOpacity>
-          </View>
+        <Text
+          style={{
+            color: color.text,
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 16,
+            borderBottomWidth: 1,
+            borderBottomColor: color.borderColor,
+          }}
+        >
+          Account
+        </Text>
+        <View>
+          <TouchableOpacity onPress={handleLogout} style={{ marginBottom: 16 }}>
+            <Text style={{ color: color.text, fontSize: 18 }}>Logout</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
