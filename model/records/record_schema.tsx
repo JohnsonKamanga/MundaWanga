@@ -23,7 +23,7 @@ export async function addRecordSchema(
   schema: TRecordSchema,
   db: SQLiteDatabase
 ): Promise<TRecordSchema> {
-  
+  await createRecordSchemaTable(db);
 
   return recordSchemaRepository.insert(schema);
 }
@@ -31,14 +31,25 @@ export async function findRecordSchemaByName(
   name: string,
   db: SQLiteDatabase
 ): Promise<TRecordSchema | null> {
-  
-  return recordSchemaRepository.findBy({ name: { eqauls: name } });
+  await createRecordSchemaTable(db);
+  return recordSchemaRepository.findBy({ name: { equals: name } });
 }
+
+export async function findRecordSchemaById(
+  id: number,
+  db: SQLiteDatabase
+) {
+  await createRecordSchemaTable(db);
+  const sch = await recordSchemaRepository.findBy({ id: { equals: id } });
+  if(sch)
+  return parseRecordSchema(sch);
+}
+
 
 export async function findAllRecordSchemas(
   db: SQLiteDatabase
 ): Promise<TRecordSchema[]> {
-  
+  await createRecordSchemaTable(db);
   return recordSchemaRepository.query();
 }
 
@@ -50,3 +61,4 @@ export function parseRecordSchema(schema: TRecordSchema) {
     fields: fieldsObj,
   };
 }
+ 
