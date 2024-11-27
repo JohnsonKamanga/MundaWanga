@@ -1,4 +1,4 @@
-// HomeScreen Component
+// HomeScreen Componen
 import React from "react";
 import { ScrollView, View, Text } from "react-native";
 import { Card, CardBody, CardFooter, CardHeader } from "@/components/Card";
@@ -65,6 +65,7 @@ export default function HomeScreen() {
 
       <View className="my-5 px-2">
         {/*Budjet summary card*/}
+        {}
         <Card>
           <View className="flex flex-row gap-x-2 items-centre">
             <Ionicons name="calculator-outline" size={30} />
