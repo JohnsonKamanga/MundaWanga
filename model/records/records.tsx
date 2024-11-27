@@ -49,17 +49,17 @@ export function parseRecord(record: TRecord) {
   };
 }
 
-export function findRecordsByQuery(
-  query: string,
-  db: SQLiteDatabase
-): Promise<TRecord[]> {
-  const options = {
-    columns: "fields",
-    where: {
-      fields: { contains: query },
-    },
-    order: { fields: "ASC" },
-  };
+// export function findRecordsByQuery(
+//   query: string,
+//   db: SQLiteDatabase
+// ): Promise<TRecord[]> {
+//   const options = {
+//     columns: "fields",
+//     where: {
+//       fields: { contains: query },
+//     },
+//     order: { fields: "ASC" },
+//   };
 
-  return recordRepository.query(options);
-}
+//   return recordRepository.query(options);
+// }

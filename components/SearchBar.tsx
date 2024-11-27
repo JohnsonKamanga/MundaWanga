@@ -37,7 +37,7 @@ const Search = ({
         onDismiss={closeMenu}
         anchor={
           <View className="w-full ">
-            <View className="w-[55px] items-center justify-center ">
+            <View className="w-[55px] items-center justify-center p-3 ">
               <FAB
                 style={{
                   backgroundColor: "gray",
