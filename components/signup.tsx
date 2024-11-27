@@ -67,7 +67,7 @@ const SignupScreen = ({handleComponentChange}:{
   ><ScrollView>
     <Text style={styles.title}>Create Account</Text>
 
-    {/* Full Name */}
+    
     <Controller
       control={control}
       name="name"
@@ -178,7 +178,7 @@ const SignupScreen = ({handleComponentChange}:{
         )}
         />
 
-    {/* Password */}
+    
     <Controller
       control={control}
       name="password"
@@ -274,6 +274,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
+    backgroundColor: 'green'
   },
 });
 
