@@ -63,6 +63,7 @@ export async function createExpenseTable(db : SQLiteDatabase): Promise<SQLite.SQ
       CREATE TABLE IF NOT EXISTS expense (
       id INTEGER PRIMARY KEY NOT NULL,
       inventory_id INTEGER,
+      budget_id INTEGER,
       last_modified DATETIME DEFAULT CURRENT_TIMESTAMP ,
       set_date DATETIME DEFAULT CURRENT_TIMESTAMP ,
       quantity_used REAL NOT NULL,

@@ -5,11 +5,17 @@ import { createRecordTable } from "../schema";
 export type TRecord = {
   id?: number;
   fields: string;
+  set_date?: number;
+  last_modified?: number;
+  schema_id: number; 
 };
 
 const recordMapping: ColumnMapping<TRecord> = {
   id: { type: columnTypes.INTEGER },
   fields: { type: columnTypes.JSON },
+  set_date: {type: columnTypes.DATETIME},
+  last_modified: {type: columnTypes.DATETIME},
+  schema_id: {type: columnTypes.INTEGER},
 };
 
 const recordRepository = new Repository(
@@ -45,8 +51,10 @@ export async function deleteRecord(
 }
 
 export function parseRecord(record: TRecord) {
+  const {fields, ...others} = record;
   return {
-    id: record?.id,
-    ...JSON.parse(record.fields),
+    ...others,
+    ...JSON.parse(fields),
   };
 }
+ 
