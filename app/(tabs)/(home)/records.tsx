@@ -21,7 +21,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Ionicons } from "@expo/vector-icons";
 import { DynamicForm } from "@/components/DynamicForm";
-
+import Search from "@/components/SearchBar";
 interface Record {
   id?: number;
   type: "livestock" | "crop";
@@ -197,6 +197,13 @@ export default function Records() {
           </View>
         ) : (
           <>
+            <Search
+              search={() => {
+                console.log("searching...");
+              }}
+              setItems={setRecords}
+            />
+
             <FlatList
               data={records}
               renderItem={renderItem}

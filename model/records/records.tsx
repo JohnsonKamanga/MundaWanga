@@ -48,3 +48,18 @@ export function parseRecord(record: TRecord) {
     ...JSON.parse(record.fields),
   };
 }
+
+export function findRecordsByQuery(
+  query: string,
+  db: SQLiteDatabase
+): Promise<TRecord[]> {
+  const options = {
+    columns: "fields",
+    where: {
+      fields: { contains: query },
+    },
+    order: { fields: "ASC" },
+  };
+
+  return recordRepository.query(options);
+}
