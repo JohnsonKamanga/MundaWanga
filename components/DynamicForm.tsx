@@ -20,10 +20,10 @@ import { FormField } from "./FormField";
 import { Divider } from "react-native-paper";
 
 export type TField = {
-  fieldname: string;
+  fieldName: string;
   fieldType: any;
 };
-
+ 
 const ListOfFormFieldElements = [<TextInput />];
 
 export function DynamicForm({
@@ -44,10 +44,12 @@ export function DynamicForm({
   };
 
   const handleFormDone = () => {
+    const rec = JSON.stringify(formFieldList);
+    console.log('rec to store: ', rec)
     addRecordSchema(
       {
         name: schemaName,
-        fields: JSON.stringify(formFieldList),
+        fields: rec,
       },
       db
     )
@@ -90,7 +92,7 @@ export function DynamicForm({
         }}
         className="bg-gray-200 flex-row justify-between rounded-xl"
       >
-        <Text>{item.fieldname}</Text>
+        <Text>{item.fieldName}</Text>
         <View
           style={{
             borderLeftWidth: 1,
@@ -253,7 +255,7 @@ export function DynamicForm({
                         setFormFieldList([
                           ...formFieldList,
                           {
-                            fieldname: newFieldName,
+                            fieldName: newFieldName,
                             fieldType: newFieldType,
                           },
                         ]);
