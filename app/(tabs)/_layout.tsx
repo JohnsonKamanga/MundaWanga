@@ -3,17 +3,30 @@ import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import {Drawer} from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '@/hooks/useUserContext';
 import LoginPage from '@/components/login_component';
+import { useSQLiteContext } from 'expo-sqlite';
+import { createTables } from '@/model/schema';
 
 export default function SideBar(){
   const colorScheme = useColorScheme();
+  const db = useSQLiteContext();
   const {token} = useContext(UserContext);
 
   if(!token){
     return <LoginPage/>
   }
+
+  useEffect(()=>{
+    createTables(db)
+    .then((value)=>{
+      console.log("all tables created");
+    })
+    .catch((err=>{
+      console.error(err)
+    }))
+  }, [])
 
 
   return(

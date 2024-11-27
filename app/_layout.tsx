@@ -9,6 +9,7 @@ import "../global.css";
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SQLiteProvider } from 'expo-sqlite';
 import { UserContext, useUserContext } from '../hooks/useUserContext';
+import { createTables } from '@/model/schema';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -26,12 +27,16 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+
   if (!loaded) {
     return null;
   }
 
   return (
-    <SQLiteProvider databaseName='MundaWanga.db'>
+    <SQLiteProvider databaseName='MundaWanga.db' onInit={(db)=>{
+      createTables(db);
+      return
+    }}>
     <UserContext.Provider
     value={{token, setToken}}
     >

@@ -15,7 +15,8 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle:{
           backgroundColor: Colors[colorScheme ?? 'light'].barColor,
-        }
+        },
+        tabBarHideOnKeyboard: true,
       }}>
       <Tabs.Screen
         name="index"

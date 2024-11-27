@@ -22,13 +22,15 @@ export async function addRecord(
   record: TRecord,
   db: SQLiteDatabase
 ): Promise<TRecord> {
-  await createRecordTable(db);
+  console.log('adding record table(outside table creation)...')
+  
+  console.log('adding record to database ...')
 
   return recordRepository.insert(record);
 }
 
 export async function findAllRecords(db: SQLiteDatabase): Promise<TRecord[]> {
-  await createRecordTable(db);
+  
 
   return recordRepository.query();
 }
@@ -37,7 +39,7 @@ export async function deleteRecord(
   id: number,
   db: SQLiteDatabase
 ): Promise<boolean> {
-  await createRecordTable(db);
+  
 
   return recordRepository.destroy(id);
 }

@@ -106,11 +106,16 @@ export function BudgetModal({
                   onPress={() => {
                     setShowDatePicker(true);
                   }}
+                  className="py-1"
                 >
-                  <Text>
+                  <Text
+                  style={{
+                    color: "gray",
+                  }}
+                  >
                     {wasDateUpdated
                       ? formatRelative(endDate, new Date(Date.now()))
-                      : "pick a date"}
+                      : "Date"}
                   </Text>
                 </Pressable>
                 {showDatePicker && (

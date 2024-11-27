@@ -23,7 +23,7 @@ export async function addRecordSchema(
   schema: TRecordSchema,
   db: SQLiteDatabase
 ): Promise<TRecordSchema> {
-  await createRecordSchemaTable(db);
+  
 
   return recordSchemaRepository.insert(schema);
 }
@@ -31,14 +31,14 @@ export async function findRecordSchemaByName(
   name: string,
   db: SQLiteDatabase
 ): Promise<TRecordSchema | null> {
-  await createRecordSchemaTable(db);
+  
   return recordSchemaRepository.findBy({ name: { eqauls: name } });
 }
 
 export async function findAllRecordSchemas(
   db: SQLiteDatabase
 ): Promise<TRecordSchema[]> {
-  await createRecordSchemaTable(db);
+  
   return recordSchemaRepository.query();
 }
 

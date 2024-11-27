@@ -1,4 +1,3 @@
-import { formStyles } from "@/app/(tabs)/(home)/records";
 import { Colors } from "@/constants/Colors";
 import { addRecordSchema } from "@/model/records/record_schema";
 import { Ionicons } from "@expo/vector-icons";

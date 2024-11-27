@@ -1,4 +1,4 @@
-import { Text, View, Switch, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { Text, View, Switch, TouchableOpacity, Alert, ScrollView, useColorScheme } from 'react-native';
 import React, { useContext, useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { deleteItemAsync } from 'expo-secure-store';
@@ -20,12 +20,13 @@ export default function Settings() {
   const handleLogout = () => {
     deleteItemAsync('token')
     .then(()=>{
-      setToken(null);
+      setToken(undefined);
       console.log('token', token);
     Alert.alert('Logout', 'Success.');
   })
   .catch((err)=>{
     Alert.alert('Failed', 'logout');
+    console.error(err);
   })
   };
 

@@ -15,6 +15,7 @@ export default function BudgetCard({ budget, setTargetBudget, setUpdate, setDele
         content={budget.name}
         containerClassName="flex flex-row w-full items-center justify-between"
       >
+        <View className="w-[70px] flex-row justify-between">
         <Pressable
         onPress={()=>{
           setTargetBudget(budget);
@@ -31,6 +32,7 @@ export default function BudgetCard({ budget, setTargetBudget, setUpdate, setDele
         >
         <Ionicons name="trash-outline" size={20} color={colorScheme === "light" ? "black" : "white"} />
         </Pressable>
+        </View>
       </CardHeader>
       <CardBody className="w-[80%]">
         <View className="flex flex-row">
@@ -46,7 +48,7 @@ export default function BudgetCard({ budget, setTargetBudget, setUpdate, setDele
           </Text>
         </View>
         <ProgressBar
-          dividend={budget.max_amount / 40}
+          dividend={budget.used}
           divisor={budget.max_amount}
         />
       </CardBody>

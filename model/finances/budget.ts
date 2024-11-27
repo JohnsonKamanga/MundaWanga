@@ -42,7 +42,7 @@ export async function addBudget(
   budget: TSubmitData,
   db: SQLiteDatabase
 ): Promise<TBudget | TSubmitData> {
-  await createBudgetTable(db);
+  
 
   return budgetRepository.insert(budget);
 }
@@ -51,14 +51,14 @@ export async function findBudgetRowById(
   id: number,
   db: SQLiteDatabase
 ): Promise<TBudget | TSubmitData | null> {
-  await createBudgetTable(db);
+  
   return budgetRepository.findBy({ id: { equals: id } });
 }
 
 export async function findAllBudgets(
   db: SQLiteDatabase
 ): Promise<TBudget[] | TSubmitData[]> {
-  await createBudgetTable(db);
+  
 
   return budgetRepository.query();
 }
@@ -67,7 +67,7 @@ export async function updateBudget(
   updatedBudget: TBudget,
   db: SQLiteDatabase
 ): Promise<TBudget | TSubmitData | null> {
-  await createBudgetTable(db);
+  
   const sql = `UPDATE budget 
                SET name = ?, end_date = ?, max_amount = ?, last_modified = ?, used = ? 
                WHERE id = ?`;
@@ -87,7 +87,7 @@ export async function deleteBudget(
   id: number,
   db: SQLiteDatabase
 ): Promise<boolean> {
-  await createBudgetTable(db);
+  
 
   return budgetRepository.destroy(id);
 }

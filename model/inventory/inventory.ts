@@ -28,7 +28,7 @@ export async function addInventory(
   inventory: TInventory,
   db: SQLiteDatabase
 ): Promise<TInventory> {
-  await createInventoryTable(db);
+  
 
   return inventoryRepository.insert(inventory);
 }
@@ -37,14 +37,14 @@ export async function findInventoryById(
   id: number,
   db: SQLiteDatabase
 ): Promise<TInventory | null> {
-  await createInventoryTable(db);
+  
   return inventoryRepository.findBy({ id: { equals: id } });
 }
 
 export async function findAllInventory(
   db: SQLiteDatabase
 ): Promise<TInventory[]> {
-  await createInventoryTable(db);
+  
 
   return inventoryRepository.query();
 }
@@ -58,7 +58,7 @@ export async function updateInventory(
   },
   db: SQLiteDatabase
 ): Promise<TInventory | null> {
-  await createInventoryTable(db);
+  
   const sql = `UPDATE inventory 
                  SET last_modified = ?, available_quantity = ?, name = ? 
                  WHERE id = ?`;
@@ -76,7 +76,7 @@ export async function deleteInventory(
   id: number,
   db: SQLiteDatabase
 ): Promise<boolean> {
-  await createInventoryTable(db);
+  
 
   return inventoryRepository.destroy(id);
 }
