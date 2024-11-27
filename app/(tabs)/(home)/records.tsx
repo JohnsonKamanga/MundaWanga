@@ -22,6 +22,7 @@ import { DynamicForm } from "@/components/DynamicForm";
 import { Colors } from "@/constants/Colors";
 import { RecordForm, formStyles } from "@/components/RecordForm";
 import { findRecordSchemaById, findRecordSchemaByName } from "@/model/records/record_schema";
+import Search from "@/components/SearchBar";
 
 interface TExtendedRecord extends TRecord {
   schema: any

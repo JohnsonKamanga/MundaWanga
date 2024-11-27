@@ -227,8 +227,9 @@ const SignupScreen = ({handleComponentChange}:{
       style={styles.button}
       loading={loading}
       disabled={loading}
-    >
+    ><Text>
       {loading ? 'Signing up...' : 'Create Account'}
+      </Text>
     </Button>
 
     {/* Snackbar */}
