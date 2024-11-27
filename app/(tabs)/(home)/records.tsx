@@ -21,10 +21,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { DynamicForm } from "@/components/DynamicForm";
 import { Colors } from "@/constants/Colors";
 import { RecordForm, formStyles } from "@/components/RecordForm";
+import { findRecordSchemaById, findRecordSchemaByName } from "@/model/records/record_schema";
 
-
+interface TExtendedRecord extends TRecord {
+  schema: any
+}
 export default function Records() {
-  const [records, setRecords] = useState<TRecord[]>([]);
+  const [records, setRecords] = useState<TExtendedRecord[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showRecordSchemaForm, setShowRecordSchemaForm] = useState(false);
@@ -33,14 +36,16 @@ export default function Records() {
   const colorScheme = useColorScheme();
 
   const loadRecords = async () => {
-    // const storedRecords: TRecord[] = [];
-    // const jsonRecords = await findAllRecords(db);
-    // for (let i = 0; i < jsonRecords.length; i++) {
-    //   storedRecords.push(parseRecord(jsonRecords[i]));
-    //   console.log(i, 'th element: ', parseRecord(jsonRecords[i]))
-    // }
-    // console.log('records: ',storedRecords);
-    // setRecords(storedRecords);
+    const storedRecords: TExtendedRecord[] = [];
+    const jsonRecords = await findAllRecords(db);
+    for (let i = 0; i < jsonRecords.length; i++) {
+      const sch = await findRecordSchemaById(jsonRecords[i].schema_id, db);
+      console.log('example schema: ', sch)
+      storedRecords.push({...parseRecord(jsonRecords[i]), schema:sch});
+      console.log(i, 'th element: ', parseRecord(jsonRecords[i]))
+    }
+    console.log('records: ',storedRecords);
+    setRecords(storedRecords);
   };
 
   useEffect(() => {
@@ -66,11 +71,12 @@ export default function Records() {
     }
   };
 
-  const renderItem = ({ item, index }: { item: TRecord; index: number }) => (
+  const renderItem = ({ item, index }: { item: TExtendedRecord; index: number }) => (
     <View style={formStyles.recordContainer}>
       <View style={formStyles.recordHeader}>
         
       </View>
+      <Text>Schema Name: {item.schema?.name}</Text>
       <Text>Name: id : {item?.id}</Text>
       <Text>description: something</Text>
       
