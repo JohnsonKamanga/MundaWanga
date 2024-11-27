@@ -34,10 +34,10 @@ export function UpdateBudgetModal({
   const { colorScheme } = useColorScheme();
   const [maxAmount, setMaxAmount] = useState<number>(targetUpdateBudget.max_amount);
   const [endDate, setEndDate] = useState<Date>(new Date(targetUpdateBudget.end_date));
-  const [name, setName] = useState<string>(targetUpdateBudget.name);
+  const [newName, setNewName] = useState<string>(targetUpdateBudget.name);
 
   const clearForm = () => {
-    setName("");
+    setNewName("");
     setMaxAmount(0);
     setEndDate(new Date());
   };
@@ -58,7 +58,11 @@ export function UpdateBudgetModal({
           }}
           className="min-h-screen h-full w-full flex-col items-center p-4"
         >
-          <View className="relative w-full p-10 mt-[15%] rounded-xl bg-white dark:bg-[#808080] gap-y-3">
+          <View
+          style={{
+            backgroundColor: colorScheme === 'light' ? 'white' : Colors['dark'].barColor
+          }}
+          className="relative w-full p-10 mt-[15%] rounded-xl gap-y-3">
             <View className="flex items-center justify-center">
               <Pressable
                 style={{
@@ -72,38 +76,41 @@ export function UpdateBudgetModal({
                 <Ionicons name="close" color="black" size={30} />
               </Pressable>
 
-              <Text className="font-bold text-3xl">Update Budget Details</Text>
+              <Text className="font-bold text-3xl dark:text-white">Update Budget Details</Text>
             </View>
             <View className=" flex flex-col gap-y-4">
                 <View>
-                <Text className="font-semibold text-xl">
+                <Text className="font-semibold text-xl dark:text-white">
                     Name
                 </Text>
-              <FormField>
+              <FormField className="dark:bg-green-700">
                 <TextInput
+                className="dark:text-white"
                   onChangeText={(text) => {
-                    setName(text);
+                    setNewName(text);
                   }}
-                  placeholder={name}
-                  defaultValue={name}
+                  placeholder={targetUpdateBudget.name.toString()}
+                  defaultValue={newName}
                 />
               </FormField>
               </View>
               <View>
-                <Text className="font-semibold text-xl">
+                <Text className="font-semibold text-xl dark:text-white">
                     Maximum Amount
                 </Text>
               <FormField>
                 <TextInput
+                className="dark:text-white"
                   onChangeText={(text) => {
                     setMaxAmount(Number(text));
                   }}
                   placeholder={targetUpdateBudget.max_amount.toString()}
+                  defaultValue={maxAmount.toString()}
                 />
               </FormField>
               </View>
               <View>
-                <Text className="font-semibold text-xl">
+                <Text className="font-semibold text-xl dark:text-white">
                     End Date
                 </Text>
               <FormField>
@@ -115,7 +122,7 @@ export function UpdateBudgetModal({
                 >
                   <Text
                   style={{
-                    color: "gray",
+                    color: colorScheme === 'light' ? "gray" : 'white',
                   }}
                   >
                     {formatRelative(endDate, new Date(Date.now()))}
@@ -156,7 +163,7 @@ export function UpdateBudgetModal({
                   const {name, max_amount, end_date, last_modified, id, ...otherProperties} = targetUpdateBudget;
                   updateBudget(
                     {   id,
-                      name: name,
+                      name: newName,
                       max_amount: maxAmount,
                       last_modified: Date.now(),
                       end_date: endDate.getTime(),

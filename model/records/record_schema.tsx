@@ -32,8 +32,19 @@ export async function findRecordSchemaByName(
   db: SQLiteDatabase
 ): Promise<TRecordSchema | null> {
   await createRecordSchemaTable(db);
-  return recordSchemaRepository.findBy({ name: { eqauls: name } });
+  return recordSchemaRepository.findBy({ name: { equals: name } });
 }
+
+export async function findRecordSchemaById(
+  id: number,
+  db: SQLiteDatabase
+) {
+  await createRecordSchemaTable(db);
+  const sch = await recordSchemaRepository.findBy({ id: { equals: id } });
+  if(sch)
+  return parseRecordSchema(sch);
+}
+
 
 export async function findAllRecordSchemas(
   db: SQLiteDatabase
@@ -50,3 +61,4 @@ export function parseRecordSchema(schema: TRecordSchema) {
     fields: fieldsObj,
   };
 }
+ 

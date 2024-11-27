@@ -1,27 +1,29 @@
-import { deleteBudget, TBudget } from "@/model/finances/budget";
+import { Colors } from "@/constants/Colors";
+import { deleteExpense, TExpense } from "@/model/finances/expense";
 import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
+import { useColorScheme } from "react-native";
 import { Alert, Pressable, Text, View } from "react-native";
 import {
   ActivityIndicator,
   Dialog,
-  PaperProvider,
   Portal,
 } from "react-native-paper";
 
-export function DeleteBudgetDialog({
+export function DeleteExpenseDialog({
   visible,
   setVisible,
-  targetBudget,
-  loadBudgets,
+  targetExpense,
+  loadExpenses,
 }: {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  loadBudgets: React.Dispatch<React.SetStateAction<void>>;
-  targetBudget: TBudget;
+  loadExpenses: React.Dispatch<React.SetStateAction<void>>;
+  targetExpense: TExpense;
 }) {
   const db = useSQLiteContext();
   const [loading, setLoading] = useState(false);
+  const colorScheme = useColorScheme();
 
   return (
     <Portal>
@@ -31,7 +33,7 @@ export function DeleteBudgetDialog({
           setVisible(false);
         }}
         style={{
-          backgroundColor: "white",
+          backgroundColor: colorScheme === 'light' ? 'white' : Colors['dark'].barColor,
           shadowOpacity: 0.02,
           borderWidth: 1,
           borderColor: "rgba(0,0,0,0.1)",
@@ -46,9 +48,9 @@ export function DeleteBudgetDialog({
           ) : (
             <View>
               <Text className="dark:text-white text-xl">
-                Are you sure you want to delete your budget called{" "}
+                Are you sure you want to delete this income record: {" "}
                 <Text className="font-semibold dark:text-white">
-                  {targetBudget.name}?
+                  {targetExpense.description}?
                 </Text>
               </Text>
             </View>
@@ -58,10 +60,11 @@ export function DeleteBudgetDialog({
           <Pressable
             onPress={() => {
               setLoading(true);
-              deleteBudget(targetBudget.id, db)
+              if(targetExpense.id)
+              deleteExpense(targetExpense.id, db)
                 .then((deleted) => {
                   if (deleted) {
-                    loadBudgets();
+                    loadExpenses();
                     setVisible(false);
                     Alert.alert(
                       "Record deleted succesfully",
