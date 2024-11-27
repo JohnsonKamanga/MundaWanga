@@ -16,6 +16,7 @@ const LoginPage = () => {
   const {token, setToken} = useContext(UserContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [formState, setFormState] = useState< 'Login' | 'SignUp'>('Login');
 
   const onSubmit = () => {
       axios.post(`${baseurl}/auth/login`, {
@@ -32,10 +33,12 @@ const LoginPage = () => {
           console.error('error occured: ', err)
         })
   };
-const handleRegister=()=>{
-  <SignupScreen/>
-}
+ 
   return (
+    <>
+    {
+      formState === 'Login' ?
+
     <View style={styles.container}>
       <Text style={styles.title}>MundaWanga</Text>
       <TextInput
@@ -57,8 +60,19 @@ const handleRegister=()=>{
       {errors.password && <Text style={styles.error}>Password is required</Text>}
       <Button title="Login" onPress={onSubmit} />
       <Text>Dont have an account?</Text>
-      <Button title="register" onPress={handleRegister} />
+      <Button title="register" onPress={()=>{
+        console.log('Changing to signup')
+        setFormState('SignUp');
+      }} />
     </View>
+  : 
+  <SignupScreen
+  handleComponentChange={()=>{
+    setFormState('Login');
+  }}
+  />
+  }
+  </>
   );
 };
 
