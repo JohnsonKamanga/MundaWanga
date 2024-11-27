@@ -23,14 +23,14 @@ import { Ionicons } from "@expo/vector-icons";
 
 type voidFunc = () => void;
 
-
+ 
 function CalenderComponent({
   item,
   fields,
   setFields,
   fieldsRef,
 }: {
-  item: { fieldname: string; fieldType: "Text" | "Numeric" | "Date" };
+  item: { fieldName: string; fieldType: "Text" | "Numeric" | "Date" };
   fields: Record<string, any>;
   setFields: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   fieldsRef: React.MutableRefObject<Record<string, any>>;
@@ -40,7 +40,7 @@ function CalenderComponent({
   return (
     <>
       <View>
-        <Text>{item.fieldname}</Text>
+        <Text>{item.fieldName}</Text>
         <FormField>
           <Pressable
             onPress={() => {
@@ -61,7 +61,7 @@ function CalenderComponent({
           minimumDate={new Date()}
           onChange={(e) => {
             setDate(e.nativeEvent.timestamp);
-            fieldsRef.current[item.fieldname] = e.nativeEvent.timestamp;
+            fieldsRef.current[item.fieldName] = e.nativeEvent.timestamp;
             setFields(fieldsRef.current);
             setShowCalender(false);
           }}
@@ -77,7 +77,7 @@ function TextInputField({
   setFields,
   fieldsRef,
 }: {
-  item: { fieldname: string; fieldType: "Text" | "Numeric" | "Date" };
+  item: { fieldName: string; fieldType: "Text" | "Numeric" | "Date" };
   fields: Record<string, any>;
   setFields: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   fieldsRef: React.MutableRefObject<Record<string, any>>;
@@ -86,18 +86,18 @@ function TextInputField({
 
   return (
     <>
-      <Text>{item.fieldname}</Text>
+      <Text>{item.fieldName}</Text>
       <TextInput
         value={userText}
         style={formStyles.input}
         onChangeText={(text) => {
           if (fieldsRef.current) {
             setUserText(text);
-            fieldsRef.current[item.fieldname] = text;
+            fieldsRef.current[item.fieldName] = text;
             setFields(fieldsRef.current);
           }
         }}
-        placeholder={"Enter " + item.fieldname}
+        placeholder={"Enter " + item.fieldName}
       />
     </>
   );
@@ -109,7 +109,7 @@ function NumericTextField({
   setFields,
   fieldsRef,
 }: {
-  item: { fieldname: string; fieldType: "Text" | "Numeric" | "Date" };
+  item: { fieldName: string; fieldType: "Text" | "Numeric" | "Date" };
   fields: Record<string, any>;
   setFields: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   fieldsRef: React.MutableRefObject<Record<string, any>>;
@@ -118,18 +118,18 @@ function NumericTextField({
 
   return (
     <>
-      <Text>{item.fieldname}</Text>
+      <Text>{item.fieldName}</Text>
       <TextInput
         value={userText}
         style={formStyles.input}
         onChangeText={(text) => {
           if (fieldsRef.current) {
             setUserText(text);
-            fieldsRef.current[item.fieldname] = text;
+            fieldsRef.current[item.fieldName] = text;
             setFields(fieldsRef.current);
           }
         }}
-        placeholder={"Enter " + item.fieldname}
+        placeholder={"Enter " + item.fieldName}
       />
     </>
   );
@@ -145,7 +145,8 @@ export function RecordForm({
   loadRecords: voidFunc;
 }) {
   const [record, setRecord] = useState<TRecord>({
-    fields: ''
+    fields: '',
+    schema_id: 0,
   });
 
   const [fieldValue, setFieldValue] = useState<string | number | Date>(0);
@@ -165,7 +166,7 @@ export function RecordForm({
     item,
     index,
   }: {
-    item: { fieldname: string; fieldType: "Text" | "Numeric" | "Date" };
+    item: { fieldName: string; fieldType: "Text" | "Numeric" | "Date" };
     index: number;
   }) => {
     const component =
@@ -194,14 +195,20 @@ export function RecordForm({
 
     return (
       <View>
-        <Text className="font-semibold text-lg">{item.fieldname}</Text>
+        <Text className="font-semibold text-lg">{item.fieldName}</Text>
         <FormField>{component}</FormField>
       </View>
     );
   };
 
   const saveRecord = () => {
-    addRecord({ fields: JSON.stringify(fields) }, db)
+    if(targetSchema?.id){
+    addRecord({ fields: JSON.stringify(fields),
+                set_date: Date.now(),
+                last_modified: Date.now(),
+                schema_id: targetSchema?.id,
+
+     }, db)
       .then((rec) => {
         console.log('new record: ',rec)
         loadRecords();
@@ -210,9 +217,10 @@ export function RecordForm({
       .catch((err) => {
         console.error("Error when storing record", err);
       });
-
+}
     setRecord({
-      fields:''
+      fields:'',
+      schema_id: 0
     });
   };
 
