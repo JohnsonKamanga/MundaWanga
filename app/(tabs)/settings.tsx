@@ -40,10 +40,14 @@ export default function Settings() {
   //       })
   //       .catch((error) => {
   //         console.error(error);
-  //       })
+  //       });
   //     }
-  //   } )
-  // })
+  //   })
+  //   .catch((error) => {
+  //     console.error(error);
+      
+  //   })
+  // }, []);
 
   const handleNotification = () => {
     Alert.alert(
@@ -99,41 +103,28 @@ export default function Settings() {
       contentContainerStyle={{ flexGrow: 1, backgroundColor: color.bg }}
     >
       <View style={{ flex: 1, padding: 24 }}>
-        <Text
+        {/* <Text
           style={{
             color: color.text,
             fontSize: 24,
             fontWeight: 'bold',
             marginBottom: 16,
-            marginTop: 32,
             borderBottomWidth: 1,
             borderBottomColor: color.borderColor,
           }}
         >
           Settings
-        </Text>
+        </Text> */}
 
-        <Text
-          style={{
-            color: color.text,
-            fontSize: 20,
-            fontWeight: 'bold',
-            marginBottom: 16,
-            borderBottomWidth: 1,
-            borderBottomColor: color.borderColor,
-          }}
-        >
-          General
-        </Text>
         <View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
+          {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
             <Text style={{ color: color.text, fontSize: 18 }}>Dark Theme</Text>
             <Switch
               value={isDarkMode}
               onValueChange={toggleDarkMode}
               trackColor={{ false: color.borderColor, true: color.text }}
             />
-          </View>
+          </View> */}
 
           {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 }}>
             <Text style={{ color: color.text, fontSize: 18 }}>Date Format</Text>
@@ -188,7 +179,7 @@ export default function Settings() {
             borderBottomColor: color.borderColor,
           }}
         >
-          Notifications
+          Storage
         </Text>
 
         <View>

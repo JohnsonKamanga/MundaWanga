@@ -20,8 +20,8 @@ export default function Feedback() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: color.bg, padding: 16 }}>
-      <Text style={{ color: color.text, fontSize: 24, marginBottom: 16 }}>Send Us Feedback</Text>
+    <View style={{ flex: 1, backgroundColor: color.bg, padding: 16, marginTop: 50 }}>
+      {/* <Text style={{ color: color.text, fontSize: 24, marginBottom: 16 }}>Send Us Feedback</Text> */}
 
       <TextInput
         style={{
@@ -31,6 +31,7 @@ export default function Feedback() {
           marginBottom: 16,
           color: color.text,
           backgroundColor: '9d9d9d',
+          borderRadius: 8,
         }}
         placeholder="Your Name"
         placeholderTextColor={color.background}
@@ -45,7 +46,8 @@ export default function Feedback() {
           padding: 10,
           marginBottom: 16,
           color: color.text,
-          backgroundColor: color.text,
+          backgroundColor: 'white',
+          borderRadius: 8,
         }}
         placeholder="Your Email"
         placeholderTextColor={color.background}
@@ -60,7 +62,8 @@ export default function Feedback() {
           padding: 10,
           marginBottom: 16,
           color: color.text,
-          backgroundColor: color.text,
+          backgroundColor: 'white',
+          borderRadius: 8,
         }}
         placeholder="Your Feedback"
         placeholderTextColor={color.background}
@@ -78,7 +81,7 @@ export default function Feedback() {
         }}
         onPress={handleSubmit}
       >
-        <Text style={{ color: color.text }}>Submit</Text>
+        <Text style={{ color: 'white', fontWeight: '900', fontSize: 18 }}>Submit</Text>
       </TouchableOpacity>
     </View>
   );

@@ -25,6 +25,7 @@
     "expo-asset": "~10.0.10",
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.28",
+    "expo-device": "^7.0.1",
     "expo-drizzle-studio-plugin": "^0.0.2",
     "expo-file-system": "~17.0.1",
     "expo-font": "~12.0.9",
@@ -51,6 +52,7 @@
     "react-native-screens": "3.31.1",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-web": "~0.19.10",
+    "react-router-dom": "^7.0.1",
     "realm": "^12.13.1",
     "tailwindcss-react-native": "^1.7.10"
   },
