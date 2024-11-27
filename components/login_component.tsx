@@ -12,11 +12,13 @@ import {
   ActivityIndicator,
   ImageBackground,
 } from 'react-native';
+import SignupScreen from './signup';
 
-const LoginPage = ({ navigation }) => {
+const LoginPage = () => {
   const { control, handleSubmit, formState: { errors } } = useForm();
   const { setToken } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
+  const [formState, setFormState] = useState<"Login" | "SignUp">("Login");
 
   const onSubmit = (data: { username: string; password: string }) => {
     setLoading(true);
@@ -33,8 +35,12 @@ const LoginPage = ({ navigation }) => {
       })
       .finally(() => setLoading(false));
   };
-
+ 
   return (
+    <>
+{
+  formState === "Login" ?
+
     <ImageBackground
       source={require('../assets/images/background-image.jpeg')} // Replace with the path to your image in the assets folder
       style={styles.background}
@@ -93,7 +99,7 @@ const LoginPage = ({ navigation }) => {
 
         {/* Sign Up Link */}
         <TouchableOpacity
-          onPress={() => navigation.navigate('SignupPage')} // Update with the correct route name for your signup page
+          onPress={() => setFormState('SignUp')} // Update with the correct route name for your signup page
           style={styles.signupLinkContainer}
         >
           <Text style={styles.signupText}>
@@ -102,7 +108,15 @@ const LoginPage = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </ImageBackground>
-  );
+
+    : 
+
+    <SignupScreen handleComponentChange={()=>{
+      setFormState("Login");
+    }}/>
+  }  
+  </>
+);
 };
 
 const styles = StyleSheet.create({
