@@ -33,10 +33,7 @@ export default function RootLayout() {
   }
 
   return (
-    <SQLiteProvider databaseName='MundaWanga.db' onInit={(db)=>{
-      createTables(db);
-      return
-    }}>
+    <SQLiteProvider databaseName='MundaWanga.db'>
     <UserContext.Provider
     value={{token, setToken}}
     >

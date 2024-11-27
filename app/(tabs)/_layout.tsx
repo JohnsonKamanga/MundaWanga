@@ -18,17 +18,6 @@ export default function SideBar(){
     return <LoginPage/>
   }
 
-  useEffect(()=>{
-    createTables(db)
-    .then((value)=>{
-      console.log("all tables created");
-    })
-    .catch((err=>{
-      console.error(err)
-    }))
-  }, [])
-
-
   return(
     <GestureHandlerRootView>
       <Drawer
