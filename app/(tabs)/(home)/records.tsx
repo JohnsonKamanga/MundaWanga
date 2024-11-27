@@ -8,12 +8,22 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  Pressable,
 } from "react-native";
-import { FAB } from "react-native-paper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FAB, Menu, PaperProvider, Portal } from "react-native-paper";
+import {
+  addRecord,
+  deleteRecord,
+  findAllRecords,
+  parseRecord,
+} from "@/model/records/records";
+import { useSQLiteContext } from "expo-sqlite";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import { Ionicons } from "@expo/vector-icons";
+import { DynamicForm } from "@/components/DynamicForm";
+import Search from "@/components/SearchBar";
 interface Record {
+  id?: number;
   type: "livestock" | "crop";
   name: string;
   description: string;
@@ -33,16 +43,22 @@ export default function Records() {
     breedOrVariety: "",
     date: "",
   });
+  const [showMenu, setShowMenu] = useState(false);
+  const [showRecordSchemaForm, setShowRecordSchemaForm] = useState(false);
+  const db = useSQLiteContext();
+  const [isDynamicFormVisible, setIsDynamicFormVisible] = useState(false);
 
   useEffect(() => {
     loadRecords();
   }, []);
 
   const loadRecords = async () => {
-    const storedRecords = await AsyncStorage.getItem("records");
-    if (storedRecords) {
-      setRecords(JSON.parse(storedRecords));
+    const storedRecords: Record[] = [];
+    const jsonRecords = await findAllRecords(db);
+    for (let i = 0; i < jsonRecords.length; i++) {
+      storedRecords.push(parseRecord(jsonRecords[i]));
     }
+    setRecords(storedRecords);
   };
 
   const saveRecord = async () => {
@@ -50,9 +66,15 @@ export default function Records() {
       Alert.alert("Error", "All fields are required.");
       return;
     }
-    const newRecords = [...records, record];
-    await AsyncStorage.setItem("records", JSON.stringify(newRecords));
-    setRecords(newRecords);
+
+    addRecord({ fields: JSON.stringify(record) }, db)
+      .then(() => {
+        loadRecords();
+      })
+      .catch((err) => {
+        console.error("Error when storing record", err);
+      });
+
     setRecord({
       type: "livestock",
       name: "",
@@ -75,22 +97,29 @@ export default function Records() {
     );
   };
 
-  const deleteRecord = async (index: number) => {
-    const updatedRecords = records.filter((_, i) => i !== index);
-    await AsyncStorage.setItem("records", JSON.stringify(updatedRecords));
-    setRecords(updatedRecords);
+  const removeRecord = async (index: number) => {
+    deleteRecord(records[index]?.id, db)
+      .then((deleted) => {
+        if (deleted) loadRecords();
+        else {
+          console.error("Failed to delete record");
+        }
+      })
+      .catch((err) => {
+        console.error(err, "Failed to delete record");
+      });
   };
 
   const renderItem = ({ item, index }: { item: Record; index: number }) => (
-    <View style={styles.recordContainer}>
-      <View style={styles.recordHeader}>
+    <View style={formStyles.recordContainer}>
+      <View style={formStyles.recordHeader}>
         <Icon
           name={item.type === "livestock" ? "cow" : "corn"}
           size={24}
           color="black"
-          style={styles.recordIcon}
+          style={formStyles.recordIcon}
         />
-        <Text style={styles.recordTitle}>
+        <Text style={formStyles.recordTitle}>
           {item.type === "livestock" ? "Livestock Record" : "Crop Record"}
         </Text>
       </View>
@@ -100,91 +129,150 @@ export default function Records() {
         {item.type === "livestock" ? "Breed" : "Variety"}: {item.breedOrVariety}
       </Text>
       <Text>Date: {item.date}</Text>
-      <View style={styles.buttonContainer}>
+      <View style={formStyles.buttonContainer}>
         <TouchableOpacity
-          style={styles.viewMoreButton}
+          style={formStyles.viewMoreButton}
           onPress={() => viewRecordDetails(item)}
         >
-          <Text style={styles.buttonText}>View</Text>
+          <Text style={formStyles.buttonText}>View</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => deleteRecord(index)}
+          style={formStyles.deleteButton}
+          onPress={() => removeRecord(index)}
         >
-          <Text style={styles.buttonText}>Delete</Text>
+          <Text style={formStyles.buttonText}>Delete</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <View style={styles.container}>
-      {isFormVisible ? (
-        <View style={styles.form}>
-          <Text style={styles.formTitle}>Add New Record</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={record.name}
-            onChangeText={(text) => setRecord({ ...record, name: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="description"
-            value={record.description}
-            onChangeText={(text) => setRecord({ ...record, description: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="quantity"
-            value={record.quantity}
-            onChangeText={(text) => setRecord({ ...record, quantity: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Breed/Variety"
-            value={record.breedOrVariety}
-            onChangeText={(text) =>
-              setRecord({ ...record, breedOrVariety: text })
-            }
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Date etc 16 oct 2024 "
-            value={record.date}
-            onChangeText={(text) => setRecord({ ...record, date: text })}
-          />
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Cancel"
-              onPress={() => setIsFormVisible(false)}
-              color="gray"
+    <PaperProvider>
+      <View style={formStyles.container}>
+        {isFormVisible ? (
+          <View style={formStyles.form}>
+            <Text style={formStyles.formTitle}>Add New Record</Text>
+            <TextInput
+              style={formStyles.input}
+              placeholder="Name"
+              value={record.name}
+              onChangeText={(text) => setRecord({ ...record, name: text })}
             />
-            <Button title="Save" onPress={saveRecord} color="green" />
+            <TextInput
+              style={formStyles.input}
+              placeholder="description"
+              value={record.description}
+              onChangeText={(text) =>
+                setRecord({ ...record, description: text })
+              }
+            />
+            <TextInput
+              style={formStyles.input}
+              placeholder="quantity"
+              value={record.quantity}
+              onChangeText={(text) => setRecord({ ...record, quantity: text })}
+            />
+            <TextInput
+              style={formStyles.input}
+              placeholder="Breed/Variety"
+              value={record.breedOrVariety}
+              onChangeText={(text) =>
+                setRecord({ ...record, breedOrVariety: text })
+              }
+            />
+            <TextInput
+              style={formStyles.input}
+              placeholder="Date etc 16 oct 2024 "
+              value={record.date}
+              onChangeText={(text) => setRecord({ ...record, date: text })}
+            />
+            <View style={formStyles.buttonContainer}>
+              <Button
+                title="Cancel"
+                onPress={() => setIsFormVisible(false)}
+                color="gray"
+              />
+              <Button title="Save" onPress={saveRecord} color="green" />
+            </View>
           </View>
-        </View>
-      ) : (
-        <>
-          <FlatList
-            data={records}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
-            ListEmptyComponent={() => (
-              <Text style={styles.emptyListText}>No records found</Text>
+        ) : (
+          <>
+            <Search
+              search={() => {
+                console.log("searching...");
+              }}
+              setItems={setRecords}
+            />
+
+            <FlatList
+              data={records}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index.toString()}
+              ListEmptyComponent={() => (
+                <Text style={formStyles.emptyListText}>No records found</Text>
+              )}
+            />
+            {showRecordSchemaForm && (
+              <Portal>
+                <View className="h-full w-full bg-red-500 flex flex-row items-center justify-center">
+                  <Text className="black">record schema</Text>
+                  <Pressable
+                    onPress={() => {
+                      setShowRecordSchemaForm(false);
+                    }}
+                  >
+                    <Ionicons name="close" size={35} />
+                  </Pressable>
+                </View>
+              </Portal>
             )}
-          />
-          <FAB
-            style={styles.fab}
-            icon="plus"
-            onPress={() => setIsFormVisible(true)}
-          />
-        </>
+            <View
+              style={{
+                position: "absolute",
+                right: 20,
+                bottom: 30,
+              }}
+            >
+              <Menu
+                mode="elevated"
+                visible={showMenu}
+                onDismiss={() => {
+                  setShowMenu(false);
+                }}
+                anchor={
+                  <Pressable
+                    className="bg-green-500 p-2 rounded-xl bottom-[120px]"
+                    onPress={() => setShowMenu(true)}
+                  >
+                    <Ionicons name="add" size={35} />
+                  </Pressable>
+                }
+              >
+                <Menu.Item
+                  onPress={() => {
+                    setIsFormVisible(true);
+                  }}
+                  title="Create Record"
+                />
+                <Menu.Item
+                  onPress={() => {
+                    setIsDynamicFormVisible(true);
+                  }}
+                  title="Create Record Schema"
+                />
+              </Menu>
+            </View>
+          </>
+        )}
+      </View>
+      {isDynamicFormVisible && (
+        <DynamicForm setFormVisible={setIsDynamicFormVisible} />
       )}
-    </View>
+    </PaperProvider>
   );
 }
 
-const styles = StyleSheet.create({
+export const formStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f0f0f0",
