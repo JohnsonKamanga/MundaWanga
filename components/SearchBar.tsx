@@ -26,6 +26,11 @@ const Search = ({
           console.log("Search results: ", res);
           setItems(res);
         }}
+        onEndEditing={async () => {
+          const res = await findRecordsByQuery(query, db);
+          console.log("search result", res);
+          setItems(res);
+        }}
         placeholder="Search"
         onChangeText={(text) => {
           setQuery(text);
