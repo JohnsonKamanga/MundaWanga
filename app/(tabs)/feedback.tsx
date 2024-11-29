@@ -2,6 +2,8 @@ import { Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { useThemeContext } from '@/components/ThemeContext';
 import { Colors } from '@/constants/Colors';
+import { baseurl } from '@/constants/url';
+import axios from 'axios';
 
 export default function Feedback() {
   // const { isDarkMode } = useThemeContext();
@@ -14,10 +16,24 @@ export default function Feedback() {
   const handleSubmit = () => {
     if (!name || !email || !feedback) {
       Alert.alert('Error', 'All fields are required');
-    } else {
+    }else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      Alert.alert('Error', 'Invalid email');
+    }
+     else {
       Alert.alert('Feedback Submitted', `Name: ${name}\nEmail: ${email}\nFeedback: ${feedback}`);
     }
   };
+
+  axios.post(`${baseurl}/feedback`,{
+    message: feedback, user_id:1,
+  }).then((addedMessage) => {
+    console.log('success:', addedMessage.data?.message);
+  })
+  .catch((err => {
+    console.error('An error occured:',err);
+  }))
+
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: color.bg, padding: 16, marginTop: 50 }}>
