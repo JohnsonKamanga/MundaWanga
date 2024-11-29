@@ -34,7 +34,7 @@ export async function addIncome(
   db: SQLiteDatabase
 ): Promise<TIncome> {
   
-
+ await createIncomeTable(db);
   if (income.inventory_id) {
     const targetInventory = await findInventoryById(income.inventory_id, db);
 
@@ -59,13 +59,13 @@ export async function findIncomeById(
   id: number,
   db: SQLiteDatabase
 ): Promise<TIncome | null> {
-  
+  await createIncomeTable(db)
   return incomeRepository.findBy({ id: { equals: id } });
 }
 
 export async function findAllIncome(db: SQLiteDatabase): Promise<TIncome[]> {
   
-
+  await createIncomeTable(db)
   return incomeRepository.query();
 }
 
@@ -73,7 +73,7 @@ export async function updateIncome(
   income: TIncome,
   db: SQLiteDatabase
 ): Promise<TIncome | null> {
-  
+  await createIncomeTable(db)
   const sql = `UPDATE income 
                  SET inventory_id = ?, last_modified = ?, quantity_added = ?, description = ? , amount_of_money = ?
                  WHERE id = ?`;
@@ -112,6 +112,6 @@ export async function deleteIncome(
   db: SQLiteDatabase
 ): Promise<boolean> {
   
-
+  await createIncomeTable(db)
   return incomeRepository.destroy(id);
 }

@@ -57,17 +57,22 @@ export function parseRecord(record: TRecord) {
   };
 }
 
-export function findRecordsByQuery(
+export async function findRecordsByQuery(
   query: string,
   db: SQLiteDatabase
 ): Promise<TRecord[]> {
   const options = {
-    columns: "fields",
     where: {
-      fields: { contains: query },
+      fields: { contains: `%${query}%` },
     },
     order: { fields: "ASC" },
   };
 
-  return recordRepository.query(options);
+  const jsonRecords = await recordRepository.query(options);
+  const parsedRecords: TRecord[] = [];
+
+  for (let i = 0; i < jsonRecords.length; i++) {
+    parsedRecords.push(parseRecord(jsonRecords[i]));
+  }
+  return parsedRecords;
 }

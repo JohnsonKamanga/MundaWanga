@@ -37,7 +37,7 @@ export async function addexpense(
   db: SQLiteDatabase
 ): Promise<TExpense> {
   
-
+  await createExpenseTable(db);
   //update related inventory
   if (expense.inventory_id) {
     const targetInventory = await findInventoryById(expense.inventory_id, db);
@@ -89,12 +89,13 @@ export async function findExpenseById(
   id: number,
   db: SQLiteDatabase
 ): Promise<TExpense | null> {
+  await createExpenseTable(db);
   
   return expenseRepository.findBy({ id: { equals: id } });
 }
 
 export async function findAllExpenses(db: SQLiteDatabase): Promise<TExpense[]> {
-  
+  await createExpenseTable(db);
 
   return expenseRepository.query();
 }
@@ -103,7 +104,7 @@ export async function updateExpense(
   expense: TExpense,
   db: SQLiteDatabase
 ): Promise<TExpense | null> {
-  
+  await createExpenseTable(db);
   const sql = `UPDATE expense 
                  SET inventory_id = ?, last_modified = ?, quantity_used = ?, description = ? , amount_of_money = ?
                  WHERE id = ?`;
@@ -172,6 +173,6 @@ export async function deleteExpense(
   db: SQLiteDatabase
 ): Promise<boolean> {
   
-
+  await createExpenseTable(db);
   return expenseRepository.destroy(id);
 }
