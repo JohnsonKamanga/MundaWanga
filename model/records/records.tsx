@@ -8,15 +8,11 @@ export type TRecord = {
   set_date?: number;
   last_modified?: number;
   schema_id: number;
-  schema_id: number;
 };
 
 const recordMapping: ColumnMapping<TRecord> = {
   id: { type: columnTypes.INTEGER },
   fields: { type: columnTypes.JSON },
-  set_date: { type: columnTypes.DATETIME },
-  last_modified: { type: columnTypes.DATETIME },
-  schema_id: { type: columnTypes.INTEGER },
   set_date: { type: columnTypes.DATETIME },
   last_modified: { type: columnTypes.DATETIME },
   schema_id: { type: columnTypes.INTEGER },
@@ -55,33 +51,12 @@ export async function deleteRecord(
 
 export function parseRecord(record: TRecord) {
   const { fields, ...others } = record;
-  const { fields, ...others } = record;
   return {
     ...others,
     ...JSON.parse(fields),
   };
 }
 
-export async function findRecordsByQuery(
-  query: string,
-  db: SQLiteDatabase,
-  queryOptions?: {
-    fields?: "ASC" | "DESC";
-    last_modified?: "ASC" | "DESC";
-  }
-): Promise<TRecord[]> {
-  const options = queryOptions
-    ? {
-        where: {
-          fields: { contains: `%${query}%` },
-        },
-        order: queryOptions,
-      }
-    : {
-        where: {
-          fields: { contains: `%${query}%` },
-        },
-      };
 export async function findRecordsByQuery(
   query: string,
   db: SQLiteDatabase,
