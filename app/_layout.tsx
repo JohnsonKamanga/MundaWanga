@@ -17,6 +17,7 @@ import { createTables } from "@/model/schema";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { registerForPushNotificationsAsync } from "@/functions/notifications";
+import { TNotification } from "@/model/notification/notification";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,9 +35,7 @@ export default function RootLayout() {
   const [notification, setNotification] = useState<
     Notifications.Notification | undefined
   >(undefined);
-  const [notifications, setNotifications] = useState<
-    Notifications.Notification[]
-  >([]);
+  const [notifications, setNotifications] = useState<TNotification[]>([]);
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
 
