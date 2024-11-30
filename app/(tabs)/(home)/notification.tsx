@@ -109,12 +109,11 @@ export default function Notification() {
               <View className="flex-row items-center p-3 ">
                 <MaterialIcons name="warning" size={24} />
                 <Title>
-                  <Text> Alert: {not.title}</Text>
+                  <Text className=""> {not.title}</Text>
                 </Title>
               </View>
               <View>
                 <Text className="mx-2 text-s">{not.body}</Text>
-                <Text>Data: {not && JSON.stringify(not.data)}</Text>
                 <Text className="text-right text-s text-gray-600 mx-2">
                   {formatRelative(not.added_date, Date.now())}
                 </Text>
