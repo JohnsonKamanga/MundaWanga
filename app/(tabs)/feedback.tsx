@@ -1,9 +1,10 @@
 import { Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useThemeContext } from '@/components/ThemeContext';
 import { Colors } from '@/constants/Colors';
 import { baseurl } from '@/constants/url';
 import axios from 'axios';
+import { UserContext } from '@/hooks/useUserContext';
 
 export default function Feedback() {
   // const { isDarkMode } = useThemeContext();
@@ -12,26 +13,30 @@ export default function Feedback() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [feedback, setFeedback] = useState('');
+  const {token} = useContext(UserContext);
 
   const handleSubmit = () => {
+
     if (!name || !email || !feedback) {
       Alert.alert('Error', 'All fields are required');
     }else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
       Alert.alert('Error', 'Invalid email');
     }
-     else {
-      Alert.alert('Feedback Submitted', `Name: ${name}\nEmail: ${email}\nFeedback: ${feedback}`);
-    }
-  };
-
+else {
   axios.post(`${baseurl}/feedback`,{
-    message: feedback, user_id:1,
+    message: feedback, user: {
+      username: token?.username
+    },
   }).then((addedMessage) => {
     console.log('success:', addedMessage.data?.message);
+    Alert.alert('Feedback Submitted', `Name: ${name}\nEmail: ${email}\nFeedback: ${feedback}`);
   })
   .catch((err => {
-    console.error('An error occured:',err);
+    console.error('An error occured when sending feedback:',err);
+    console.log("username: ",token?.username);
   }))
+}
+  };
 
   
 
