@@ -59,14 +59,24 @@ export function parseRecord(record: TRecord) {
 
 export async function findRecordsByQuery(
   query: string,
-  db: SQLiteDatabase
+  db: SQLiteDatabase,
+  queryOptions?: {
+    fields?: "ASC" | "DESC";
+    last_modified?: "ASC" | "DESC";
+  }
 ): Promise<TRecord[]> {
-  const options = {
-    where: {
-      fields: { contains: `%${query}%` },
-    },
-    order: { fields: "ASC" },
-  };
+  const options = queryOptions
+    ? {
+        where: {
+          fields: { contains: `%${query}%` },
+        },
+        order: queryOptions,
+      }
+    : {
+        where: {
+          fields: { contains: `%${query}%` },
+        },
+      };
 
   const jsonRecords = await recordRepository.query(options);
   const parsedRecords: TRecord[] = [];

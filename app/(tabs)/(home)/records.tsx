@@ -12,6 +12,7 @@ import { FAB, Menu, PaperProvider, Portal } from "react-native-paper";
 import {
   deleteRecord,
   findAllRecords,
+  findRecordsByQuery,
   parseRecord,
   TRecord,
 } from "@/model/records/records";
@@ -21,11 +22,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { DynamicForm } from "@/components/DynamicForm";
 import { Colors } from "@/constants/Colors";
 import { RecordForm, formStyles } from "@/components/RecordForm";
-import { findRecordSchemaById, findRecordSchemaByName } from "@/model/records/record_schema";
+import {
+  findRecordSchemaById,
+  findRecordSchemaByName,
+} from "@/model/records/record_schema";
 import Search from "@/components/SearchBar";
 
 interface TExtendedRecord extends TRecord {
-  schema: any
+  schema: any;
 }
 export default function Records() {
   const [records, setRecords] = useState<TExtendedRecord[]>([]);
@@ -41,11 +45,11 @@ export default function Records() {
     const jsonRecords = await findAllRecords(db);
     for (let i = 0; i < jsonRecords.length; i++) {
       const sch = await findRecordSchemaById(jsonRecords[i].schema_id, db);
-      console.log('example schema: ', sch)
-      storedRecords.push({...parseRecord(jsonRecords[i]), schema:sch});
-      console.log(i, 'th element: ', parseRecord(jsonRecords[i]))
+      console.log("example schema: ", sch);
+      storedRecords.push({ ...parseRecord(jsonRecords[i]), schema: sch });
+      console.log(i, "th element: ", parseRecord(jsonRecords[i]));
     }
-    console.log('records: ',storedRecords);
+    console.log("records: ", storedRecords);
     setRecords(storedRecords);
   };
 
@@ -53,9 +57,7 @@ export default function Records() {
     loadRecords();
   }, []);
 
-  const viewRecordDetails = (item: TRecord) => {
-    
-  };
+  const viewRecordDetails = (item: TRecord) => {};
 
   const removeRecord = async (index: number) => {
     if (records[index]?.id) {
@@ -72,15 +74,19 @@ export default function Records() {
     }
   };
 
-  const renderItem = ({ item, index }: { item: TExtendedRecord; index: number }) => (
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: TExtendedRecord;
+    index: number;
+  }) => (
     <View style={formStyles.recordContainer}>
-      <View style={formStyles.recordHeader}>
-        
-      </View>
+      <View style={formStyles.recordHeader}></View>
       <Text>Schema Name: {item.schema?.name}</Text>
       <Text>Name: id : {item?.id}</Text>
       <Text>description: something</Text>
-      
+
       <View style={formStyles.buttonContainer}>
         <TouchableOpacity
           style={formStyles.viewMoreButton}
@@ -109,12 +115,7 @@ export default function Records() {
           />
         ) : (
           <>
-            <Search
-              search={() => {
-                console.log("searching...");
-              }}
-              setItems={setRecords}
-            />
+            <Search search={findRecordsByQuery} setItems={setRecords} />
 
             <FlatList
               data={records}
