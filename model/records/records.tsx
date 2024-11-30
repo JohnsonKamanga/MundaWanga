@@ -7,15 +7,15 @@ export type TRecord = {
   fields: string;
   set_date?: number;
   last_modified?: number;
-  schema_id: number; 
+  schema_id: number;
 };
 
 const recordMapping: ColumnMapping<TRecord> = {
   id: { type: columnTypes.INTEGER },
   fields: { type: columnTypes.JSON },
-  set_date: {type: columnTypes.DATETIME},
-  last_modified: {type: columnTypes.DATETIME},
-  schema_id: {type: columnTypes.INTEGER},
+  set_date: { type: columnTypes.DATETIME },
+  last_modified: { type: columnTypes.DATETIME },
+  schema_id: { type: columnTypes.INTEGER },
 };
 
 const recordRepository = new Repository(
@@ -28,16 +28,14 @@ export async function addRecord(
   record: TRecord,
   db: SQLiteDatabase
 ): Promise<TRecord> {
-  console.log('adding record table(outside table creation)...')
-  
-  console.log('adding record to database ...')
+  console.log("adding record table(outside table creation)...");
+
+  console.log("adding record to database ...");
 
   return recordRepository.insert(record);
 }
 
 export async function findAllRecords(db: SQLiteDatabase): Promise<TRecord[]> {
-  
-
   return recordRepository.query();
 }
 
@@ -45,30 +43,44 @@ export async function deleteRecord(
   id: number,
   db: SQLiteDatabase
 ): Promise<boolean> {
-  
-
   return recordRepository.destroy(id);
 }
 
 export function parseRecord(record: TRecord) {
-  const {fields, ...others} = record;
+  const { fields, ...others } = record;
   return {
     ...others,
     ...JSON.parse(fields),
   };
 }
 
-// export function findRecordsByQuery(
-//   query: string,
-//   db: SQLiteDatabase
-// ): Promise<TRecord[]> {
-//   const options = {
-//     columns: "fields",
-//     where: {
-//       fields: { contains: query },
-//     },
-//     order: { fields: "ASC" },
-//   };
+export async function findRecordsByQuery(
+  query: string,
+  db: SQLiteDatabase,
+  queryOptions?: {
+    fields?: "ASC" | "DESC";
+    last_modified?: "ASC" | "DESC";
+  }
+): Promise<TRecord[]> {
+  const options = queryOptions
+    ? {
+        where: {
+          fields: { contains: `%${query}%` },
+        },
+        order: queryOptions,
+      }
+    : {
+        where: {
+          fields: { contains: `%${query}%` },
+        },
+      };
 
-//   return recordRepository.query(options);
-// }
+  const jsonRecords = await recordRepository.query(options);
+  const parsedRecords: TRecord[] = [];
+
+  for (let i = 0; i < jsonRecords.length; i++) {
+    parsedRecords.push(parseRecord(jsonRecords[i]));
+  }
+
+  return parsedRecords;
+}
