@@ -1,6 +1,7 @@
 import { getItem, setItem } from "expo-secure-store";
 import { createContext, useState } from "react";
 import * as Notifications from "expo-notifications";
+import { TNotification } from "@/model/notification/notification";
 
 interface IToken {
   access_token: string;
@@ -19,10 +20,8 @@ interface SystemContext extends IUserContext {
   setChannels: React.Dispatch<
     React.SetStateAction<Notifications.NotificationChannel[]>
   >;
-  notifications: Notifications.Notification[];
-  setNotifications: React.Dispatch<
-    React.SetStateAction<Notifications.Notification[]>
-  >;
+  notifications: TNotification[];
+  setNotifications: React.Dispatch<React.SetStateAction<TNotification[]>>;
   notification: Notifications.Notification | undefined;
   setNotification: React.Dispatch<
     React.SetStateAction<Notifications.Notification | undefined>
