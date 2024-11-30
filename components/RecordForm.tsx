@@ -23,7 +23,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 type voidFunc = () => void;
 
- 
 function CalenderComponent({
   item,
   fields,
@@ -145,7 +144,7 @@ export function RecordForm({
   loadRecords: voidFunc;
 }) {
   const [record, setRecord] = useState<TRecord>({
-    fields: '',
+    fields: "",
     schema_id: 0,
   });
 
@@ -202,25 +201,28 @@ export function RecordForm({
   };
 
   const saveRecord = () => {
-    if(targetSchema?.id){
-    addRecord({ fields: JSON.stringify(fields),
-                set_date: Date.now(),
-                last_modified: Date.now(),
-                schema_id: targetSchema?.id,
-
-     }, db)
-      .then((rec) => {
-        console.log('new record: ',rec)
-        loadRecords();
-        setIsFormVisible(false);
-      })
-      .catch((err) => {
-        console.error("Error when storing record", err);
-      });
-}
+    if (targetSchema?.id) {
+      addRecord(
+        {
+          fields: JSON.stringify(fields),
+          set_date: Date.now(),
+          last_modified: Date.now(),
+          schema_id: targetSchema?.id,
+        },
+        db
+      )
+        .then((rec) => {
+          console.log("new record: ", rec);
+          loadRecords();
+          setIsFormVisible(false);
+        })
+        .catch((err) => {
+          console.error("Error when storing record", err);
+        });
+    }
     setRecord({
-      fields:'',
-      schema_id: 0
+      fields: "",
+      schema_id: 0,
     });
   };
 
@@ -282,12 +284,12 @@ export function RecordForm({
         <View style={formStyles.form}>
           <View className="w-full">
             <Pressable
-            className="p-4 "
-            onPress={()=>{
-              setShowSchemaOptions(false);
-            }}
+              className="p-4 "
+              onPress={() => {
+                setShowSchemaOptions(false);
+              }}
             >
-            <Ionicons color='black' name="close" size={35}/>
+              <Ionicons color="black" name="close" size={35} />
             </Pressable>
           </View>
           <FlatList
@@ -339,7 +341,6 @@ export function RecordForm({
     </>
   );
 }
-
 
 export const formStyles = StyleSheet.create({
   container: {
