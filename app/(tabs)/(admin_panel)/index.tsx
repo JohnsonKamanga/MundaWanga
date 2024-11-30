@@ -5,6 +5,7 @@ import { Colors } from "@/constants/Colors"
 
 
 export default function AdminFeedBack(){
+    
     const colorScheme = useColorScheme();
     const color = Colors[colorScheme ?? 'light']
 
