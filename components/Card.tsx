@@ -13,7 +13,8 @@ interface TCardHeader {
 export function CardHeader(props: TCardHeader) {
   return (
     <View className={props.containerClassName}>
-      <Text className={props?.textClassName + " font-bold text-2xl"}>{props.content}</Text>
+      <Text className={props?.textClassName + " font-bold dark:text-white text-2xl"}>{props.content}</Text>
+      {props.children}
     </View>
   );
 }

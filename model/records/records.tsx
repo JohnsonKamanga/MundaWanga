@@ -5,11 +5,17 @@ import { createRecordTable } from "../schema";
 export type TRecord = {
   id?: number;
   fields: string;
+  set_date?: number;
+  last_modified?: number;
+  schema_id: number; 
 };
 
 const recordMapping: ColumnMapping<TRecord> = {
   id: { type: columnTypes.INTEGER },
   fields: { type: columnTypes.JSON },
+  set_date: {type: columnTypes.DATETIME},
+  last_modified: {type: columnTypes.DATETIME},
+  schema_id: {type: columnTypes.INTEGER},
 };
 
 const recordRepository = new Repository(
@@ -22,13 +28,15 @@ export async function addRecord(
   record: TRecord,
   db: SQLiteDatabase
 ): Promise<TRecord> {
-  await createRecordTable(db);
+  console.log('adding record table(outside table creation)...')
+  
+  console.log('adding record to database ...')
 
   return recordRepository.insert(record);
 }
 
 export async function findAllRecords(db: SQLiteDatabase): Promise<TRecord[]> {
-  await createRecordTable(db);
+  
 
   return recordRepository.query();
 }
@@ -37,15 +45,16 @@ export async function deleteRecord(
   id: number,
   db: SQLiteDatabase
 ): Promise<boolean> {
-  await createRecordTable(db);
+  
 
   return recordRepository.destroy(id);
 }
 
 export function parseRecord(record: TRecord) {
+  const {fields, ...others} = record;
   return {
-    id: record?.id,
-    ...JSON.parse(record.fields),
+    ...others,
+    ...JSON.parse(fields),
   };
 }
 

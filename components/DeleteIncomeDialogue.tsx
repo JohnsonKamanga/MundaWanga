@@ -1,27 +1,29 @@
-import { deleteBudget, TBudget } from "@/model/finances/budget";
+import { Colors } from "@/constants/Colors";
+import { deleteIncome, TIncome } from "@/model/finances/income";
 import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
+import { useColorScheme } from "react-native";
 import { Alert, Pressable, Text, View } from "react-native";
 import {
   ActivityIndicator,
   Dialog,
-  PaperProvider,
   Portal,
 } from "react-native-paper";
 
-export function DeleteBudgetDialog({
+export function DeleteIncomeDialog({
   visible,
   setVisible,
-  targetBudget,
-  loadBudgets,
+  targetIncome,
+  loadIncome,
 }: {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  loadBudgets: React.Dispatch<React.SetStateAction<void>>;
-  targetBudget: TBudget;
+  loadIncome: React.Dispatch<React.SetStateAction<void>>;
+  targetIncome: TIncome;
 }) {
   const db = useSQLiteContext();
   const [loading, setLoading] = useState(false);
+  const colorScheme = useColorScheme();
 
   return (
     <Portal>
@@ -31,7 +33,7 @@ export function DeleteBudgetDialog({
           setVisible(false);
         }}
         style={{
-          backgroundColor: "white",
+          backgroundColor: colorScheme === 'light' ? 'white' : Colors['dark'].barColor,
           shadowOpacity: 0.02,
           borderWidth: 1,
           borderColor: "rgba(0,0,0,0.1)",
@@ -46,9 +48,9 @@ export function DeleteBudgetDialog({
           ) : (
             <View>
               <Text className="dark:text-white text-xl">
-                Are you sure you want to delete your budget called{" "}
+                Are you sure you want to delete this income record: {" "}
                 <Text className="font-semibold dark:text-white">
-                  {targetBudget.name}?
+                  {targetIncome.description}?
                 </Text>
               </Text>
             </View>
@@ -58,10 +60,11 @@ export function DeleteBudgetDialog({
           <Pressable
             onPress={() => {
               setLoading(true);
-              deleteBudget(targetBudget.id, db)
+              if(targetIncome.id)
+              deleteIncome(targetIncome.id, db)
                 .then((deleted) => {
                   if (deleted) {
-                    loadBudgets();
+                    loadIncome();
                     setVisible(false);
                     Alert.alert(
                       "Record deleted succesfully",

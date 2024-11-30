@@ -1,55 +1,63 @@
 import { Alert, Modal, Pressable, Text, TextInput, View } from "react-native";
 import { FormField } from "./FormField";
 import { Ionicons } from "@expo/vector-icons";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { formatRelative } from "date-fns";
-import { addBudget, TBudget, TSubmitData } from "@/model/finances/budget";
+import RNPickerSelect from "react-native-picker-select";
 import { useSQLiteContext } from "expo-sqlite";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useColorScheme } from "nativewind";
 import { Colors } from "@/constants/Colors";
+import { addIncome, TIncome } from "@/model/finances/income";
+import { useEffect, useState } from "react";
+import { findAllInventory, TInventory } from "@/model/inventory/inventory";
 
-export function BudgetModal({
-  name,
-  setName,
-  budgets,
-  setBudgets,
-  maxAmount,
-  setMaxAmount,
-  endDate,
-  setEndDate,
-  wasDateUpdated,
-  setWasDateUpdated,
-  showDatePicker,
-  setShowDatePicker,
+export function IncomeModal({
+  incomeArray,
+  setIncomeArray,
   open,
   setOpen,
 }: {
-  name: string;
-  setName: React.Dispatch<React.SetStateAction<string>>;
-  maxAmount: number;
-  setMaxAmount: React.Dispatch<React.SetStateAction<number>>;
-  endDate: Date;
-  setEndDate: React.Dispatch<React.SetStateAction<Date>>;
-  wasDateUpdated: boolean;
-  setWasDateUpdated: React.Dispatch<React.SetStateAction<boolean>>;
-  showDatePicker: boolean;
-  setShowDatePicker: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  budgets: TBudget[] | TSubmitData[];
-  setBudgets: React.Dispatch<React.SetStateAction<TBudget[] | TSubmitData[]>>;
+  incomeArray: TIncome[];
+  setIncomeArray: React.Dispatch<React.SetStateAction<TIncome[]>>;
 }) {
   const db = useSQLiteContext();
   useDrizzleStudio(db);
   const { colorScheme } = useColorScheme();
+  const [inventory, setInventory] = useState<TInventory>();
+  const [quantityAdded, setQuantityAdded] = useState(0);
+  const [description, setDescription] = useState<string>("");
+  const [amountOfMoney, setAmountOfMoney] = useState(0);
+  const [inventoryList, setInventoryList] = useState<
+    {
+      label: string;
+      value: TInventory;
+    }[]
+  >([]);
 
   const clearForm = () => {
-    setName("");
-    setMaxAmount(0);
-    setEndDate(new Date());
-    setWasDateUpdated(false);
+    setDescription("");
+    setAmountOfMoney(0);
+    setQuantityAdded(0);
+    setInventory(undefined);
   };
+
+  const fetchInventoryList = async () => {
+    const list = await findAllInventory(db);
+    list.map((item) => {
+      setInventoryList([
+        ...inventoryList,
+        {
+          label: item.name,
+          value: item,
+        },
+      ]);
+    });
+  };
+
+  useEffect(() => {
+    fetchInventoryList();
+  }, []);
 
   return (
     <View className="w-full min-h-screen h-full absolute">
@@ -81,56 +89,58 @@ export function BudgetModal({
                 <Ionicons name="close" color="black" size={30} />
               </Pressable>
 
-              <Text className="font-bold text-3xl">Budget Details</Text>
+              <Text className="font-bold text-3xl">Income Details</Text>
             </View>
             <View className=" flex flex-col gap-y-4">
+              <View>
+                <Text>
+                  Income Description
+                </Text>
               <FormField>
                 <TextInput
                   onChangeText={(text) => {
-                    setName(text);
+                    setDescription(text);
                   }}
-                  placeholder="Budget Name"
-                  defaultValue={name}
+                  placeholder="Enter Income Description"
+                  defaultValue={description}
+                  value={description}
                 />
               </FormField>
+              </View>
+              <View>
+                <Text>
+                  Amount of Money
+                </Text>
               <FormField>
                 <TextInput
                   onChangeText={(text) => {
-                    setMaxAmount(Number(text));
+                    setAmountOfMoney(Number(text));
                   }}
-                  placeholder="Budget Amount"
+                  placeholder="Enter Amount of Money"
                 />
               </FormField>
+              </View>
+              <View>
+                <Text>
+                  Quantity Added
+                </Text>
               <FormField>
-                <Pressable
-                  onPress={() => {
-                    setShowDatePicker(true);
+                <TextInput
+                  onChangeText={(text) => {
+                    setQuantityAdded(Number(text));
                   }}
-                  className="py-1"
-                >
-                  <Text
-                  style={{
-                    color: "gray",
+                  placeholder="Enter Quanity Added"
+                />
+              </FormField>
+              </View>
+              <FormField>
+                <Text>Choose an inventory type</Text>
+                <RNPickerSelect
+                  items={inventoryList}
+                  onValueChange={(value) => {
+                    setInventory(value);
                   }}
-                  >
-                    {wasDateUpdated
-                      ? formatRelative(endDate, new Date(Date.now()))
-                      : "Date"}
-                  </Text>
-                </Pressable>
-                {showDatePicker && (
-                  <RNDateTimePicker
-                    mode="date"
-                    display="calendar"
-                    value={endDate}
-                    minimumDate={new Date(Date.now())}
-                    onChange={(event) => {
-                      setEndDate(new Date(event.nativeEvent.timestamp));
-                      setWasDateUpdated(true);
-                      setShowDatePicker(false);
-                    }}
-                  />
-                )}
+                />
               </FormField>
             </View>
             <View className="flex flex-row justify-center">
@@ -149,17 +159,27 @@ export function BudgetModal({
               <Pressable
                 onPress={(event) => {
                   event.preventDefault();
-                  addBudget(
-                    {
-                      name: name,
-                      max_amount: maxAmount,
-                      end_date: endDate.getTime(),
-                    },
-                    db
-                  )
+                  console.log('submitting...')
+                  const newIncome = inventory?.id
+                    ? {
+                        inventory_id: inventory?.id,
+                        last_modified: Date.now(),
+                        set_date: Date.now(),
+                        quantity_added: quantityAdded,
+                        description: description,
+                        amount_of_money: amountOfMoney,
+                      }
+                    : {
+                        last_modified: Date.now(),
+                        set_date: Date.now(),
+                        quantity_added: quantityAdded,
+                        description: description,
+                        amount_of_money: amountOfMoney,
+                      };
+                  addIncome(newIncome, db)
                     .then((value) => {
                       console.log("Budget added:", value);
-                      setBudgets([value, ...budgets]);
+                      setIncomeArray([...incomeArray, value]);
                       Alert.alert("Adding data", "success");
                       clearForm();
                       setOpen(false);

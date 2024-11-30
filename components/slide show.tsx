@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Image, ScrollView, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
 
 const { width } = Dimensions.get('window');
-const imageHeight = 200; // Set the desired height for the images
+const imageHeight = 200; 
 
 const images = [
   { slide: require('../assets/images/slide1.jpg') },

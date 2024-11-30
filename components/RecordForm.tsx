@@ -1,5 +1,4 @@
-import { formStyles, TRecord } from "@/app/(tabs)/(home)/records";
-import { addRecord, deleteRecord } from "@/model/records/records";
+import { addRecord, deleteRecord, TRecord } from "@/model/records/records";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect, useRef, useState } from "react";
@@ -8,6 +7,7 @@ import {
   Button,
   FlatList,
   Pressable,
+  StyleSheet,
   Text,
   TextInput,
   View,
@@ -19,16 +19,18 @@ import {
   TRecordSchema,
 } from "@/model/records/record_schema";
 import { formatRelative } from "date-fns";
+import { Ionicons } from "@expo/vector-icons";
 
 type voidFunc = () => void;
 
+ 
 function CalenderComponent({
   item,
   fields,
   setFields,
   fieldsRef,
 }: {
-  item: { fieldname: string; fieldType: "Text" | "Numeric" | "Date" };
+  item: { fieldName: string; fieldType: "Text" | "Numeric" | "Date" };
   fields: Record<string, any>;
   setFields: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   fieldsRef: React.MutableRefObject<Record<string, any>>;
@@ -38,7 +40,7 @@ function CalenderComponent({
   return (
     <>
       <View>
-        <Text>{item.fieldname}</Text>
+        <Text>{item.fieldName}</Text>
         <FormField>
           <Pressable
             onPress={() => {
@@ -58,12 +60,10 @@ function CalenderComponent({
           value={new Date(date)}
           minimumDate={new Date()}
           onChange={(e) => {
-            console.log("Field name", item.fieldname);
             setDate(e.nativeEvent.timestamp);
-            fieldsRef.current[item.fieldname] = e.nativeEvent.timestamp;
+            fieldsRef.current[item.fieldName] = e.nativeEvent.timestamp;
             setFields(fieldsRef.current);
             setShowCalender(false);
-            console.log(fields);
           }}
         />
       )}
@@ -77,7 +77,7 @@ function TextInputField({
   setFields,
   fieldsRef,
 }: {
-  item: { fieldname: string; fieldType: "Text" | "Numeric" | "Date" };
+  item: { fieldName: string; fieldType: "Text" | "Numeric" | "Date" };
   fields: Record<string, any>;
   setFields: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   fieldsRef: React.MutableRefObject<Record<string, any>>;
@@ -86,20 +86,18 @@ function TextInputField({
 
   return (
     <>
-      <Text>{item.fieldname}</Text>
+      <Text>{item.fieldName}</Text>
       <TextInput
         value={userText}
         style={formStyles.input}
         onChangeText={(text) => {
           if (fieldsRef.current) {
-            console.log("Field name", item.fieldname);
             setUserText(text);
-            fieldsRef.current[item.fieldname] = text;
+            fieldsRef.current[item.fieldName] = text;
             setFields(fieldsRef.current);
-            console.log(fields);
           }
         }}
-        placeholder={"Enter " + item.fieldname}
+        placeholder={"Enter " + item.fieldName}
       />
     </>
   );
@@ -111,7 +109,7 @@ function NumericTextField({
   setFields,
   fieldsRef,
 }: {
-  item: { fieldname: string; fieldType: "Text" | "Numeric" | "Date" };
+  item: { fieldName: string; fieldType: "Text" | "Numeric" | "Date" };
   fields: Record<string, any>;
   setFields: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   fieldsRef: React.MutableRefObject<Record<string, any>>;
@@ -120,20 +118,18 @@ function NumericTextField({
 
   return (
     <>
-      <Text>{item.fieldname}</Text>
+      <Text>{item.fieldName}</Text>
       <TextInput
         value={userText}
         style={formStyles.input}
         onChangeText={(text) => {
           if (fieldsRef.current) {
-            console.log("Field name", item.fieldname);
             setUserText(text);
-            fieldsRef.current[item.fieldname] = text;
+            fieldsRef.current[item.fieldName] = text;
             setFields(fieldsRef.current);
-            console.log(fields);
           }
         }}
-        placeholder={"Enter " + item.fieldname}
+        placeholder={"Enter " + item.fieldName}
       />
     </>
   );
@@ -149,12 +145,8 @@ export function RecordForm({
   loadRecords: voidFunc;
 }) {
   const [record, setRecord] = useState<TRecord>({
-    type: "livestock",
-    name: "",
-    description: "",
-    quantity: "",
-    breedOrVariety: "",
-    date: "",
+    fields: '',
+    schema_id: 0,
   });
 
   const [fieldValue, setFieldValue] = useState<string | number | Date>(0);
@@ -174,10 +166,9 @@ export function RecordForm({
     item,
     index,
   }: {
-    item: { fieldname: string; fieldType: "Text" | "Numeric" | "Date" };
+    item: { fieldName: string; fieldType: "Text" | "Numeric" | "Date" };
     index: number;
   }) => {
-    console.log(item.fieldname, " : ", item.fieldType);
     const component =
       item.fieldType === "Date" ? (
         <CalenderComponent
@@ -204,30 +195,33 @@ export function RecordForm({
 
     return (
       <View>
-        <Text className="font-semibold text-lg">{item.fieldname}</Text>
+        <Text className="font-semibold text-lg">{item.fieldName}</Text>
         <FormField>{component}</FormField>
       </View>
     );
   };
 
-  const saveRecord = async () => {
-    addRecord({ fields: JSON.stringify(fields) }, db)
-      .then(() => {
+  const saveRecord = () => {
+    if(targetSchema?.id){
+    addRecord({ fields: JSON.stringify(fields),
+                set_date: Date.now(),
+                last_modified: Date.now(),
+                schema_id: targetSchema?.id,
+
+     }, db)
+      .then((rec) => {
+        console.log('new record: ',rec)
         loadRecords();
+        setIsFormVisible(false);
       })
       .catch((err) => {
         console.error("Error when storing record", err);
       });
-
+}
     setRecord({
-      type: "livestock",
-      name: "",
-      description: "",
-      quantity: "",
-      breedOrVariety: "",
-      date: "",
+      fields:'',
+      schema_id: 0
     });
-    setIsFormVisible(false);
   };
 
   const removeRecord = async (index: number) => {
@@ -249,7 +243,6 @@ export function RecordForm({
     findAllRecordSchemas(db)
       .then((items) => {
         setSchemas(items);
-        console.log("Fetched schemas: ", items);
       })
       .catch((err) => {
         console.log("An error occured: ", err);
@@ -287,6 +280,16 @@ export function RecordForm({
     <>
       {showSchemaOptions ? (
         <View style={formStyles.form}>
+          <View className="w-full">
+            <Pressable
+            className="p-4 "
+            onPress={()=>{
+              setShowSchemaOptions(false);
+            }}
+            >
+            <Ionicons color='black' name="close" size={35}/>
+            </Pressable>
+          </View>
           <FlatList
             data={schemas}
             renderItem={drawSchemas}
@@ -336,3 +339,92 @@ export function RecordForm({
     </>
   );
 }
+
+
+export const formStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f0f0f0",
+    paddingTop: 50,
+    paddingHorizontal: 20,
+  },
+  form: {
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  formTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 15,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: "white",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  recordContainer: {
+    padding: 15,
+    marginVertical: 5,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  recordHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  recordIcon: {
+    marginRight: 10,
+  },
+  recordTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  viewMoreButton: {
+    backgroundColor: "green",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  fab: {
+    position: "absolute",
+    right: 20,
+    bottom: 30,
+    backgroundColor: "green",
+  },
+  emptyListText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "gray",
+  },
+});

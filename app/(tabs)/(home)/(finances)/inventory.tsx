@@ -10,7 +10,7 @@ import { UpdateBudgetModal } from "@/components/UpdateBudgetModal";
 import { DeleteBudgetDialog } from "@/components/DeleteBudgetDialougue";
 import { PaperProvider } from "react-native-paper";
 
-export default function Budget() {
+export default function Inventory() {
   const [budgets, setBudgets] = useState<TBudget[] | TSubmitData[]>([]);
   const [maxAmount, setMaxAmount] = useState<number>(0);
   const [endDate, setEndDate] = useState<Date>(new Date());
@@ -42,7 +42,7 @@ export default function Budget() {
     findAllBudgets(db)
       .then((budgets) => {
         setBudgets(budgets);
-        console.log("fetch successful", budgets);
+        console.log("fetch successful");
         setLoading(false);
       })
       .catch((err) => {
@@ -81,7 +81,7 @@ export default function Budget() {
                 color: "gray",
               }}
             >
-              No Budgets found
+              No Inventory found
             </Text>
           </View>
         ) : (

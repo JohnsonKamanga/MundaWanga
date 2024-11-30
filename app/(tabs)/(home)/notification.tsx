@@ -13,7 +13,7 @@ export default function Notification() {
         <Card className="bg-white h-36 rounded-e-lg mx-4 my-3 ">
           <View className="flex-row items-center p-3 ">
             <MaterialIcons name="warning" size={24} />
-            <Title> Alert</Title>
+            <Title><Text> Alert</Text></Title>
           </View>
           <View>
             <Text className="mx-2 text-s">
@@ -29,7 +29,7 @@ export default function Notification() {
         <Card className="bg-white h-36 rounded-e-lg mx-4 my-3 ">
           <View className="flex-row items-center p-3 ">
             <MaterialIcons name="warning" size={24} />
-            <Title> Alert</Title>
+            <Title><Text> Alert</Text></Title>
           </View>
           <View>
             <Text className="mx-2 text-s">
@@ -44,7 +44,7 @@ export default function Notification() {
         <Card className="bg-white h-36 rounded-e-lg mx-4 my-3">
           <View className="flex-row items-center  p-3 ">
             <MaterialIcons name="notifications" size={24} />
-            <Title> Notification</Title>
+            <Title><Text> Alert</Text></Title>
           </View>
           <View>
             <Text className="mx-2 text-s">
