@@ -34,6 +34,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { UpdateBudgetModal } from "@/components/UpdateBudgetModal";
 import { DeleteBudgetDialog } from "@/components/DeleteBudgetDialougue";
+import SummaryCard from "@/components/SummaryCard";
 
 export default function Budget() {
   const [budgets, setBudgets] = useState<TBudget[] | TSubmitData[]>([]);
@@ -76,6 +77,7 @@ export default function Budget() {
       }}
       className="h-full flex flex-col p-1"
     >
+      {/* <SummaryCard/> */}
       {loading ? (
         <View className="h-full justify-center flex flex-col items-center">
           <ActivityIndicator

@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useContext, useState } from 'react';
 import { UserContext } from '@/hooks/useUserContext';
 import LoginPage from '@/components/login_component';
+import AdminPanel  from "@/app/(tabs)/(admin_panel)";
 
 export default function SideBar(){
   const colorScheme = useColorScheme();
@@ -64,6 +65,14 @@ export default function SideBar(){
           title: 'Account Management-Title',
         }}
         />
+        <Drawer.Screen
+        name='(admin_panel)'
+        options={{
+          drawerLabel: 'Admin Panel',
+          title: 'Admin Panel',
+        }}
+        />
+
       </Drawer>
     </GestureHandlerRootView>
   )
