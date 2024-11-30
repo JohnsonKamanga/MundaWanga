@@ -40,9 +40,9 @@ export async function findRecordSchemaById(
   db: SQLiteDatabase
 ) {
   await createRecordSchemaTable(db);
-  const sch = await recordSchemaRepository.findBy({ id: { equals: id } });
+  const sch = await recordSchemaRepository.query({where:{ id: { equals: id } }});
   if(sch)
-  return parseRecordSchema(sch);
+  return parseRecordSchema(sch[0]);
 }
 
 
