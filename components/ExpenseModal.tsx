@@ -6,10 +6,23 @@ import { useSQLiteContext } from "expo-sqlite";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useColorScheme } from "nativewind";
 import { Colors } from "@/constants/Colors";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { findAllInventory, TInventory } from "@/model/inventory/inventory";
 import { addexpense, TExpense } from "@/model/finances/expense";
-import { findAllBudgets, TBudget, TSubmitData } from "@/model/finances/budget";
+import { findAllBudgets, findBudgetRowById, TBudget, TSubmitData } from "@/model/finances/budget";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+import { Platform } from "react-native";
+import {
+  addNotification,
+  findAllNotifications,
+} from "@/model/notification/notification";
+import {
+  scheduleNotifications,
+  registerForPushNotificationsAsync,
+} from "@/functions/notifications";
+import { UserContext } from "@/hooks/useUserContext";
+
 
 export function ExpenseModal({
   expenses,
@@ -42,6 +55,73 @@ export function ExpenseModal({
       value: TBudget | TSubmitData;
     }[]
   >([]);
+
+  const {
+    expoPushToken,
+    setExpoPushToken,
+    channels,
+    setChannels,
+    notifications,
+    setNotifications,
+    notification,
+    setNotification,
+    notificationListener,
+    responseListener,
+  } = useContext(UserContext);
+
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(
+      (token) => token && setExpoPushToken(token)
+    );
+
+    if (Platform.OS === "android") {
+      Notifications.getNotificationChannelsAsync().then((value) =>
+        setChannels(value ?? [])
+      );
+    }
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(async (notification) => {
+        setNotification(notification);
+        if (
+          notification.request.content.title &&
+          notification.request.content.body
+        )
+          addNotification(
+            {
+              data: JSON.stringify(notification.request.content.data),
+              title: notification.request.content.title,
+              body: notification.request.content.body,
+              added_date: notification.date,
+            },
+            db
+          )
+            .then(async (not) => {
+              setNotifications(await findAllNotifications(db));
+              
+            })
+            .catch((err) => {
+              console.log("An error occured: ", err);
+            });
+        setNotifications(await findAllNotifications(db));
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        
+      });
+
+    return () => {
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+
 
   const clearForm = () => {
     setDescription("");
@@ -214,9 +294,24 @@ export function ExpenseModal({
                     
                    const finalExpense = budget?.id ? {...newExpense, budget_id: budget.id} : newExpense;
                   addexpense(finalExpense, db)
-                    .then((value) => {
+                    .then(async (value) => {
                       console.log("Expense added:", value);
+                      const budget = await findBudgetRowById(value.budget_id,db)
                       setExpenses([...expenses, value]);
+                      if((budget?.used/budget?.max_amount > 0.9) && budget ){
+                        await Notifications.scheduleNotificationAsync({
+                          content: {
+                            title: `Budget limit nearing finish`,
+                            body: `You've used more than 90% of your budget: ${budget.name} `,
+                            data: {
+                              data: value,
+                            },
+                          },
+                          trigger: {
+                            seconds: 1
+                          },
+                        });
+                      }
                       Alert.alert("Adding data", "success");
                       clearForm();
                       setOpen(false);
