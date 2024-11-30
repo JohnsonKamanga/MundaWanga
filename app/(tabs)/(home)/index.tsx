@@ -6,6 +6,7 @@ import Slideshow from "@/components/slide show";
 import {useTailwind} from 'tailwindcss-react-native'
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ProgressBar } from "@/components/ProgressBar";
+import SummaryCard from "@/components/SummaryCard";
 export default function HomeScreen() {
   return (
     <ScrollView className="flex-1 bg-[#a2af9f]">
@@ -91,6 +92,7 @@ export default function HomeScreen() {
           <Text className="text-[#228b22] font-bold">Learn More</Text>
           </CardFooter>
         </Card>
+        <SummaryCard/>
       </View>
   </ScrollView>
   )

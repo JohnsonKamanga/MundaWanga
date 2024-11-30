@@ -15,6 +15,7 @@ import React, { useState } from "react";
 import { Button, Modal, Pressable, Text, TextInput, View } from "react-native";
 import { useColorScheme } from "nativewind";
 import { Colors } from "@/constants/Colors";
+import SummaryCard from "@/components/SummaryCard";
 
 interface TFormField {
   children: React.ReactNode;
@@ -102,6 +103,7 @@ export default function Budget() {
 
   return (
     <View className="h-full flex flex-col items-center p-1">
+      <SummaryCard/>
       <Text className="dark:text-white text-white">Budget cards</Text>
       <Card>
         <CardHeader
