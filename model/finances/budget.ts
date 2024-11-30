@@ -51,8 +51,8 @@ export async function findBudgetRowById(
   id: number,
   db: SQLiteDatabase
 ): Promise<TBudget | TSubmitData | null> {
-  
-  return budgetRepository.findBy({ id: { equals: id } });
+  const budgets = await budgetRepository.query({where:{ id: { equals: id } }});
+  return budgets[0];
 }
 
 export async function findAllBudgets(
@@ -91,3 +91,27 @@ export async function deleteBudget(
 
   return budgetRepository.destroy(id);
 }
+
+
+export async function findBudgetsByQuery(query: string,
+  db: SQLiteDatabase,
+  queryOptions?: {
+    name?: "ASC" | "DESC";
+    last_modified?: "ASC" | "DESC";
+  }): Promise<TBudget[] | TSubmitData[]> {
+
+    const options = queryOptions ?
+    {
+      where: {
+        name: { contains: `%${query}%` },
+      },
+      order: queryOptions,
+    }
+  : {
+      where: {
+        name: { contains: `%${query}%` },
+      },
+    };
+
+    return budgetRepository.query(options);
+  }
