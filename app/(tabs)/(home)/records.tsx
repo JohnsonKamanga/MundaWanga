@@ -25,8 +25,10 @@ import { RecordForm, formStyles } from "@/components/RecordForm";
 import {
   findRecordSchemaById,
   findRecordSchemaByName,
+  parseRecordSchema,
 } from "@/model/records/record_schema";
 import Search from "@/components/SearchBar";
+import { formatRelative } from "date-fns";
 
 interface TExtendedRecord extends TRecord {
   schema: any;
@@ -45,11 +47,8 @@ export default function Records() {
     const jsonRecords = await findAllRecords(db);
     for (let i = 0; i < jsonRecords.length; i++) {
       const sch = await findRecordSchemaById(jsonRecords[i].schema_id, db);
-      console.log("example schema: ", sch);
       storedRecords.push({ ...parseRecord(jsonRecords[i]), schema: sch });
-      console.log(i, "th element: ", parseRecord(jsonRecords[i]));
     }
-    console.log("records: ", storedRecords);
     setRecords(storedRecords);
   };
 
@@ -57,7 +56,7 @@ export default function Records() {
     loadRecords();
   }, []);
 
-  const viewRecordDetails = (item: TRecord) => {};
+  const viewRecordDetails = (item: TExtendedRecord) => {};
 
   const removeRecord = async (index: number) => {
     if (records[index]?.id) {
@@ -80,29 +79,54 @@ export default function Records() {
   }: {
     item: TExtendedRecord;
     index: number;
-  }) => (
-    <View style={formStyles.recordContainer}>
-      <View style={formStyles.recordHeader}></View>
-      <Text>Schema Name: {item.schema?.name}</Text>
-      <Text>Name: id : {item?.id}</Text>
-      <Text>description: something</Text>
+  }) => {
+    const fieldKeys = Object.keys(item);
+    fieldKeys.pop(); //remove schema string from the array
+    const { schema, set_date, id, last_modified, schema_id, ...otherFields } =
+      item;
+    console.log("schema ", schema);
+    return (
+      <View style={formStyles.recordContainer}>
+        <View style={formStyles.recordHeader}></View>
+        {fieldKeys.map((fieldName) => {
+          let isDatetype = false;
+          schema.fields.forEach((val, index) => {
+            if (val?.fieldName === fieldName && val?.fieldType === "Date")
+              isDatetype = true;
+          });
+          return (
+            <View key={fieldName}>
+              {isDatetype ? (
+                <Text>
+                  {fieldName} :{" "}
+                  {formatRelative(otherFields[fieldName], Date.now())}
+                </Text>
+              ) : (
+                otherFields[fieldName] && (
+                  <Text> {`${fieldName} : ${otherFields[fieldName]} `}</Text>
+                )
+              )}
+            </View>
+          );
+        })}
 
-      <View style={formStyles.buttonContainer}>
-        <TouchableOpacity
-          style={formStyles.viewMoreButton}
-          onPress={() => viewRecordDetails(item)}
-        >
-          <Text style={formStyles.buttonText}>View</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={formStyles.deleteButton}
-          onPress={() => removeRecord(index)}
-        >
-          <Text style={formStyles.buttonText}>Delete</Text>
-        </TouchableOpacity>
+        <View style={formStyles.buttonContainer}>
+          <TouchableOpacity
+            style={formStyles.viewMoreButton}
+            onPress={() => viewRecordDetails(item)}
+          >
+            <Text style={formStyles.buttonText}>View</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={formStyles.deleteButton}
+            onPress={() => removeRecord(index)}
+          >
+            <Text style={formStyles.buttonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <PaperProvider>
