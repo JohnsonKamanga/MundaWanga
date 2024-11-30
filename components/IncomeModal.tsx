@@ -75,7 +75,12 @@ export function IncomeModal({
           }}
           className="min-h-screen h-full w-full flex-col items-center p-4"
         >
-          <View className="relative w-full p-10 mt-[15%] rounded-xl bg-white dark:bg-[#808080] gap-y-3">
+          <View
+          style={{
+            backgroundColor:
+              colorScheme === "light" ? "white" : Colors["dark"].barColor,
+          }}
+          className="relative w-full p-10 mt-[15%] rounded-xl gap-y-3">
             <View className="flex items-center justify-center">
               <Pressable
                 style={{
@@ -89,11 +94,11 @@ export function IncomeModal({
                 <Ionicons name="close" color="black" size={30} />
               </Pressable>
 
-              <Text className="font-bold text-3xl">Income Details</Text>
+              <Text className="font-bold text-3xl dark:text-white">Income Details</Text>
             </View>
             <View className=" flex flex-col gap-y-4">
               <View>
-                <Text>
+                <Text className="dark:text-white">
                   Income Description
                 </Text>
               <FormField>
@@ -108,7 +113,7 @@ export function IncomeModal({
               </FormField>
               </View>
               <View>
-                <Text>
+                <Text className="dark:text-white">
                   Amount of Money
                 </Text>
               <FormField>
@@ -121,7 +126,7 @@ export function IncomeModal({
               </FormField>
               </View>
               <View>
-                <Text>
+                <Text className="dark:text-white">
                   Quantity Added
                 </Text>
               <FormField>
@@ -133,8 +138,9 @@ export function IncomeModal({
                 />
               </FormField>
               </View>
+              <View>
+              <Text className="dark:text-white">Choose an inventory type</Text>
               <FormField>
-                <Text>Choose an inventory type</Text>
                 <RNPickerSelect
                   items={inventoryList}
                   onValueChange={(value) => {
@@ -142,6 +148,7 @@ export function IncomeModal({
                   }}
                 />
               </FormField>
+              </View>
             </View>
             <View className="flex flex-row justify-center">
               <Pressable

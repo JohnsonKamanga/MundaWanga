@@ -80,8 +80,8 @@ export function UpdateExpenseModal({
                 <Ionicons name="close" color="black" size={30} />
               </Pressable>
 
-              <Text className="font-bold text-3xl dark:text-white">
-                Update Record Details
+              <Text className="font-bold text-3xl dark:text-white text-center">
+                Update Expense Record Details
               </Text>
             </View>
             <View className=" flex flex-col gap-y-4">
@@ -89,9 +89,9 @@ export function UpdateExpenseModal({
                 <Text className="font-semibold text-xl dark:text-white">
                   Description
                 </Text>
-                <FormField className="dark:bg-green-700">
+                <FormField className="">
                   <TextInput
-                    className="dark:text-white"
+                    className=""
                     onChangeText={(text) => {
                       setNewDescription(text);
                     }}
@@ -106,7 +106,7 @@ export function UpdateExpenseModal({
                 </Text>
                 <FormField>
                   <TextInput
-                    className="dark:text-white"
+                    className=""
                     onChangeText={(text) => {
                       setAmountOfMoney(Number(text));
                     }}
@@ -121,7 +121,7 @@ export function UpdateExpenseModal({
                 </Text>
                 <FormField>
                   <TextInput
-                    className="dark:text-white"
+                    className=""
                     onChangeText={(text) => {
                       setQuantityUsed(Number(text));
                     }}
@@ -176,7 +176,7 @@ export function UpdateExpenseModal({
                     })
                     .catch((err) => {
                       console.error("failed: ", err);
-                      Alert.alert("Updating data", "failed");
+                      Alert.alert("Update Failed", err?.message);
                     });
                 }}
                 className="flex flex-row items-center justify-center p-3 bg-[#228b22] rounded-xl w-[150px]"

@@ -54,6 +54,7 @@ export function ExpenseModal({
   const fetchInventoryList = async () => {
     const list = await findAllInventory(db);
     const budgets = await findAllBudgets(db);
+    setInventoryList([]);
     list.map((item) => {
       setInventoryList([
         ...inventoryList,
@@ -63,7 +64,7 @@ export function ExpenseModal({
         },
       ]);
     });
-
+    setBudgetList([])
     budgets.map((item) => {
       setBudgetList([
         ...budgetList,
@@ -95,7 +96,12 @@ export function ExpenseModal({
           }}
           className="min-h-screen h-full w-full flex-col items-center p-4"
         >
-          <View className="relative w-full p-10 mt-[15%] rounded-xl bg-white dark:bg-[#808080] gap-y-3">
+          <View 
+          style={{
+            backgroundColor:
+              colorScheme === "light" ? "white" : Colors["dark"].barColor,
+          }}
+          className="relative w-full p-10 mt-[15%] rounded-xl gap-y-3">
             <View className="flex items-center justify-center">
               <Pressable
                 style={{
@@ -109,11 +115,11 @@ export function ExpenseModal({
                 <Ionicons name="close" color="black" size={30} />
               </Pressable>
 
-              <Text className="font-bold text-3xl">Expense Details</Text>
+              <Text className="font-bold text-3xl dark:text-white">Expense Details</Text>
             </View>
             <View className=" flex flex-col gap-y-4">
               <View>
-                <Text>Expense Description</Text>
+                <Text className="dark:text-white">Expense Description</Text>
                 <FormField>
                   <TextInput
                     onChangeText={(text) => {
@@ -126,7 +132,7 @@ export function ExpenseModal({
                 </FormField>
               </View>
               <View>
-                <Text>Amount of Money</Text>
+                <Text className="dark:text-white">Amount of Money</Text>
                 <FormField>
                   <TextInput
                     onChangeText={(text) => {
@@ -137,7 +143,7 @@ export function ExpenseModal({
                 </FormField>
               </View>
               <View>
-                <Text>Quantity Used</Text>
+                <Text className="dark:text-white">Quantity Used</Text>
                 <FormField>
                   <TextInput
                     onChangeText={(text) => {
@@ -147,8 +153,9 @@ export function ExpenseModal({
                   />
                 </FormField>
               </View>
+              <View>
+              <Text className="dark:text-white">Choose an inventory type</Text>
               <FormField>
-                <Text>Choose an inventory type</Text>
                 <RNPickerSelect
                   items={inventoryList}
                   onValueChange={(value) => {
@@ -156,8 +163,10 @@ export function ExpenseModal({
                   }}
                 />
               </FormField>
+              </View>
+              <View>
+              <Text className="dark:text-white">Choose a Budget</Text>
               <FormField>
-                <Text>Choose a Budget</Text>
                 <RNPickerSelect
                   items={budgetList}
                   onValueChange={(value) => {
@@ -166,6 +175,7 @@ export function ExpenseModal({
                   }}
                 />
               </FormField>
+              </View>
             </View>
             <View className="flex flex-row justify-center">
               <Pressable
