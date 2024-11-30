@@ -107,14 +107,17 @@ export default function Notification() {
               className="bg-white h-36 rounded-e-lg mx-4 my-3 "
             >
               <View className="flex-row items-center p-3 ">
-                <MaterialIcons name="warning" size={24} />
+                <MaterialIcons name="notifications" size={24} />
                 <Title>
-                  <Text className=""> {not.title}</Text>
+                  <Text className="text-3xl font-bold text-black ">
+                    {" "}
+                    {not.title}
+                  </Text>
                 </Title>
               </View>
               <View>
-                <Text className="mx-2 text-s">{not.body}</Text>
-                <Text className="text-right text-s text-gray-600 mx-2">
+                <Text className="mx-2 text-xl">{not.body}</Text>
+                <Text className="text-right text-s text-gray-500 mx-2">
                   {formatRelative(not.added_date, Date.now())}
                 </Text>
               </View>
