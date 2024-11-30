@@ -33,6 +33,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "86780e26-ae90-4832-a2ec-51e001400a22"
+      }
+    },
+    "owner": "mtonga"
   }
 }
