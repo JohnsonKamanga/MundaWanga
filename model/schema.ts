@@ -5,7 +5,9 @@ import { Asset } from "expo-asset";
 
 export const db = SQLite.openDatabaseAsync("MundaWanga.db");
 
-export async function createBudgetTable(db: SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
+export async function createBudgetTable(
+  db: SQLiteDatabase
+): Promise<SQLite.SQLiteRunResult> {
   return db.runAsync(`
     CREATE TABLE IF NOT EXISTS  budget (
     id INTEGER PRIMARY KEY NOT NULL , 
@@ -18,7 +20,9 @@ export async function createBudgetTable(db: SQLiteDatabase): Promise<SQLite.SQLi
        `);
 }
 
-export async function createRecordSchemaTable(db: SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
+export async function createRecordSchemaTable(
+  db: SQLiteDatabase
+): Promise<SQLite.SQLiteRunResult> {
   return db.runAsync(`
       CREATE TABLE IF NOT EXISTS  record_schema (
       id INTEGER PRIMARY KEY NOT NULL ,
@@ -29,8 +33,9 @@ export async function createRecordSchemaTable(db: SQLiteDatabase): Promise<SQLit
           `);
 }
 
-export async function createRecordTable(db: SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
-  
+export async function createRecordTable(
+  db: SQLiteDatabase
+): Promise<SQLite.SQLiteRunResult> {
   return db.runAsync(`
       CREATE TABLE IF NOT EXISTS  record (
       id INTEGER PRIMARY KEY NOT NULL , 
@@ -44,7 +49,9 @@ export async function createRecordTable(db: SQLiteDatabase): Promise<SQLite.SQLi
           `);
 }
 
-export async function createInventoryTable(db: SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
+export async function createInventoryTable(
+  db: SQLiteDatabase
+): Promise<SQLite.SQLiteRunResult> {
   return db.runAsync(`
       CREATE TABLE IF NOT EXISTS  inventory (
       id INTEGER PRIMARY KEY NOT NULL , 
@@ -56,9 +63,9 @@ export async function createInventoryTable(db: SQLiteDatabase): Promise<SQLite.S
           `);
 }
 
-
-export async function createExpenseTable(db : SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
-  
+export async function createExpenseTable(
+  db: SQLiteDatabase
+): Promise<SQLite.SQLiteRunResult> {
   return db.runAsync(`
       CREATE TABLE IF NOT EXISTS expense (
       id INTEGER PRIMARY KEY NOT NULL,
@@ -70,11 +77,12 @@ export async function createExpenseTable(db : SQLiteDatabase): Promise<SQLite.SQ
       amount_of_money REAL MOT NULL,
       description TEXT NOT NULL
       );
-    `)
+    `);
 }
 
-export async function createIncomeTable(db : SQLiteDatabase): Promise<SQLite.SQLiteRunResult> {
-  
+export async function createIncomeTable(
+  db: SQLiteDatabase
+): Promise<SQLite.SQLiteRunResult> {
   return db.runAsync(`
       CREATE TABLE IF NOT EXISTS income (
       id INTEGER PRIMARY KEY NOT NULL,
@@ -85,20 +93,34 @@ export async function createIncomeTable(db : SQLiteDatabase): Promise<SQLite.SQL
       amount_of_money REAL MOT NULL,
       description TEXT NOT NULL
       );
-    `)
+    `);
 }
 
-export async function createTables(db: SQLiteDatabase){
+export async function createNotificationTable(
+  db: SQLiteDatabase
+): Promise<SQLite.SQLiteRunResult> {
+  console.log("creating notification table...");
+  return db.runAsync(`
+      CREATE TABLE IF NOT EXISTS  notification (
+      id INTEGER PRIMARY KEY NOT NULL ,
+      added_date DATETIME DEFAULT CURRENT_TIMESTAMP ,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      data TEXT NOT NULL 
+      );`);
+}
+
+export async function createTables(db: SQLiteDatabase) {
   await createRecordSchemaTable(db);
-  console.log('record_schema table created');
+  console.log("record_schema table created");
   await createInventoryTable(db);
-  console.log('inventory table created');
+  console.log("inventory table created");
   await createBudgetTable(db);
-  console.log('budget table created');
+  console.log("budget table created");
   await createExpenseTable(db);
-  console.log('expense table created');
- await createIncomeTable(db);
- console.log('income table created');
+  console.log("expense table created");
+  await createIncomeTable(db);
+  console.log("income table created");
   await createRecordTable(db);
-  console.log('record table created');
+  console.log("record table created");
 }
