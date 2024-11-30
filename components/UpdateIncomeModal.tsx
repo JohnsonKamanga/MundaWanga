@@ -81,7 +81,7 @@ export function UpdateIncomeModal({
               </Pressable>
 
               <Text className="font-bold text-3xl dark:text-white">
-                Update Record Details
+                Update Income Record Details
               </Text>
             </View>
             <View className=" flex flex-col gap-y-4">
@@ -89,9 +89,9 @@ export function UpdateIncomeModal({
                 <Text className="font-semibold text-xl dark:text-white">
                   Description
                 </Text>
-                <FormField className="dark:bg-green-700">
+                <FormField className="">
                   <TextInput
-                    className="dark:text-white"
+                    className=""
                     onChangeText={(text) => {
                       setNewDescription(text);
                     }}
@@ -106,7 +106,7 @@ export function UpdateIncomeModal({
                 </Text>
                 <FormField>
                   <TextInput
-                    className="dark:text-white"
+                    className=""
                     onChangeText={(text) => {
                       setAmountOfMoney(Number(text));
                     }}
@@ -121,7 +121,7 @@ export function UpdateIncomeModal({
                 </Text>
                 <FormField>
                   <TextInput
-                    className="dark:text-white"
+                    className=""
                     onChangeText={(text) => {
                       setQuantityAdded(Number(text));
                     }}

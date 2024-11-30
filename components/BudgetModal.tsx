@@ -67,7 +67,12 @@ export function BudgetModal({
           }}
           className="min-h-screen h-full w-full flex-col items-center p-4"
         >
-          <View className="relative w-full p-10 mt-[15%] rounded-xl bg-white dark:bg-[#808080] gap-y-3">
+          <View 
+          style={{
+            backgroundColor:
+              colorScheme === "light" ? "white" : Colors["dark"].barColor,
+          }}
+          className="relative w-full p-10 mt-[15%] rounded-xl gap-y-3">
             <View className="flex items-center justify-center">
               <Pressable
                 style={{
@@ -81,26 +86,40 @@ export function BudgetModal({
                 <Ionicons name="close" color="black" size={30} />
               </Pressable>
 
-              <Text className="font-bold text-3xl">Budget Details</Text>
+              <Text className="font-bold text-3xl dark:text-white">Budget Details</Text>
             </View>
             <View className=" flex flex-col gap-y-4">
+              <View>
+                <Text className="dark:text-white">
+                  Budget Name
+                </Text>
               <FormField>
                 <TextInput
                   onChangeText={(text) => {
                     setName(text);
                   }}
-                  placeholder="Budget Name"
+                  placeholder="Enter Budget Name"
                   defaultValue={name}
                 />
               </FormField>
+              </View>
+              <View>
+              <Text className="dark:text-white">
+                  Budget Amount
+                </Text>
               <FormField>
                 <TextInput
                   onChangeText={(text) => {
                     setMaxAmount(Number(text));
                   }}
-                  placeholder="Budget Amount"
+                  placeholder="Enter Budget Amount"
                 />
               </FormField>
+              </View>
+              <View>
+                <Text className="dark:text-white">
+                  Date
+                </Text>
               <FormField>
                 <Pressable
                   onPress={() => {
@@ -115,7 +134,7 @@ export function BudgetModal({
                   >
                     {wasDateUpdated
                       ? formatRelative(endDate, new Date(Date.now()))
-                      : "Date"}
+                      : "Choose a Date"}
                   </Text>
                 </Pressable>
                 {showDatePicker && (
@@ -132,6 +151,7 @@ export function BudgetModal({
                   />
                 )}
               </FormField>
+              </View>
             </View>
             <View className="flex flex-row justify-center">
               <Pressable

@@ -83,9 +83,9 @@ export function UpdateBudgetModal({
                 <Text className="font-semibold text-xl dark:text-white">
                     Name
                 </Text>
-              <FormField className="dark:bg-green-700">
+              <FormField className="">
                 <TextInput
-                className="dark:text-white"
+                className=""
                   onChangeText={(text) => {
                     setNewName(text);
                   }}
@@ -100,7 +100,7 @@ export function UpdateBudgetModal({
                 </Text>
               <FormField>
                 <TextInput
-                className="dark:text-white"
+                className=""
                   onChangeText={(text) => {
                     setMaxAmount(Number(text));
                   }}
@@ -121,9 +121,6 @@ export function UpdateBudgetModal({
                   className="py-1"
                 >
                   <Text
-                  style={{
-                    color: colorScheme === 'light' ? "gray" : 'white',
-                  }}
                   >
                     {formatRelative(endDate, new Date(Date.now()))}
                   </Text>
