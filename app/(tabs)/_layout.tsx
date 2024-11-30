@@ -66,6 +66,14 @@ export default function SideBar(){
           title: 'Account Management-Title',
         }}
         />
+        <Drawer.Screen
+        name='(admin_panel)'
+        options={{
+          drawerLabel: 'Admin Panel',
+          title: 'Admin Panel',
+        }}
+        />
+
       </Drawer>
     </GestureHandlerRootView>
   )

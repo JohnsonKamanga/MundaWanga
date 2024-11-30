@@ -25,29 +25,9 @@ export default function Settings() {
   const [notificationToken, setNorificationToken] = useState(null);
   const colorScheme = useColorScheme();
 
-  // const { isDarkMode, toggleDarkMode } = useThemeContext();
   const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
 
   const color = Colors[colorScheme ?? 'light'];
-
-  // const togglePushNotifications = () => setPushNotifications((prev) => !prev);
-
-  // useEffect(() => {
-  //   Notifications.requestPermissionsAsync().then((permissionResponse) => {
-  //     if(permissionResponse.status === 'granted'){
-  //       Notification.registerForNotificationAsync().then((registrationResponse) => {
-  //         setNotificationToken(registrationResponse.token);
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //       });
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     console.error(error);
-      
-  //   })
-  // }, []);
 
   const handleNotification = () => {
     Alert.alert(
