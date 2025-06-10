@@ -1,3 +1,14 @@
+# Application Idea
+A farm records management application that is to be used by farmers to keep track of the records.
+
+# Key features
+- Dynamic record creation which allows farmers to create record schemas on the application that match their existing records
+- Record keeping i.e crud processes on records
+- Local first approach to record keeping. All records are stored locally on user's devices using SQLite.
+- Budget creation and management
+- Notifications eg alerting users when theur budgets are being exceeded
+- Profit and loss determination based on farmer's cash flow 
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
