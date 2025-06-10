@@ -1,5 +1,5 @@
 # Application Idea
-A farm records management application that is to be used by farmers to keep track of the records.
+This was a school project for a software engineer course. It is a farm records management application that is to be used by farmers to keep track of their finances and records.
 
 # Key features
 - Dynamic record creation which allows farmers to create record schemas on the application that match their existing records
