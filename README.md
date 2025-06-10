@@ -2,12 +2,19 @@
 This was a school project for a software engineer course. It is a farm records management application that is to be used by farmers to keep track of their finances and records.
 
 # Key features
-- Dynamic record creation which allows farmers to create record schemas on the application that match their existing records
-- Record keeping i.e crud processes on records
-- Local first approach to record keeping. All records are stored locally on user's devices using SQLite.
-- Budget creation and management
-- Notifications eg alerting users when theur budgets are being exceeded
-- Profit and loss determination based on farmer's cash flow 
+- Dynamic record creation which allows farmers to create record schemas on the application that match their existing records.(allows farmers to maintaining their existing record schemas)
+- Record keeping i.e crud operations on records.
+- Finance management through the use of budgets.
+- Local first approach to record keeping and finance management. All records are stored locally on user's devices using SQLite.
+- Notifications eg alerting users when their budgets are being exceeded.
+- Profit and loss determination based on farmer's cash flow.
+  
+### Features that I worked on
+- Record keeping. My contribution on this was partial because I worked on part of the querying logic related to record keeping
+- Finance management through the use of budgets. This includes all the basic crud operations and the user interface
+- Notifications. My contribution on this was partial as well because I only implemented notifications related to finances
+
+`PS, commits made by the user JohnsonKamanga123 are mine because that is my github account for school related projects`
 
 # Welcome to your Expo app 👋
 
